@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 class LabeledTextField extends StatefulWidget {
   final String label;
@@ -9,12 +8,16 @@ class LabeledTextField extends StatefulWidget {
   final void Function(String)? onChanged;
   final List<TextInputFormatter>? formatter;
   final Color borderColor;
+  final String? hintText;
+  final TextInputType? textInputType;
   const LabeledTextField(
       {super.key,
       required this.label,
       required this.isPassword,
       required this.controller,
       required this.borderColor,
+      this.textInputType,
+      this.hintText,
       this.onChanged,
       this.formatter});
 
@@ -54,16 +57,22 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
                 color: borderCol,
                 width: 1.0,
               )),
-          borderRadius: BorderRadius.all(Radius.circular(15))),
+          borderRadius: const BorderRadius.all(Radius.circular(15))),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: TextFormField(
+            keyboardType: widget.textInputType,
             inputFormatters: widget.formatter,
             onChanged: widget.onChanged,
             controller: widget.controller,
             obscureText: isObscured,
             cursorColor: Colors.black,
             decoration: InputDecoration(
+                hintText: widget.hintText,
+                hintStyle: const TextStyle(
+                    fontFamily: 'Poppins',
+                    color: Color.fromARGB(255, 124, 123, 123),
+                    fontSize: 16),
                 suffixIcon: widget.isPassword
                     ? IconButton(
                         icon: isObscured

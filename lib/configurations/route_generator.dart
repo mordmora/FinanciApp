@@ -2,6 +2,7 @@
 import 'package:finanzas/pages/complete_profile.dart';
 import 'package:finanzas/pages/confirmation_recovery.dart';
 import 'package:finanzas/pages/forgot_password.dart';
+import 'package:finanzas/pages/home_page.dart';
 import 'package:finanzas/pages/login_page.dart';
 import 'package:finanzas/pages/new_account.dart';
 
@@ -24,6 +25,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => const NewAccount());
       case '/completeProfile':
         return MaterialPageRoute(builder: (context) => const CompleteProfile());
+      case '/home':
+        return MaterialPageRoute(builder: (context) => const HomePage());
       default:
         return MaterialPageRoute(builder: (context) => const EntryPoint());
     }

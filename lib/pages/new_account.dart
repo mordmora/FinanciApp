@@ -40,6 +40,13 @@ class _NewAccountState extends State<NewAccount> {
     super.initState();
   }
 
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _repeatPasswordController.dispose();
+    super.dispose();
+  }
+
   bool _validCredentials() {
     if (_email.isEmpty ||
         _password.isEmpty ||
@@ -59,7 +66,7 @@ class _NewAccountState extends State<NewAccount> {
 
   @override
   Widget build(BuildContext context) {
-    LoginProvider loginProvider = Provider.of<LoginProvider>(context);
+    RegisterProvider loginProvider = Provider.of<RegisterProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 

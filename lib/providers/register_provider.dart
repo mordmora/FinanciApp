@@ -1,6 +1,7 @@
+import 'package:finanzas/models/user.dart';
 import 'package:flutter/material.dart';
 
-class LoginProvider extends ChangeNotifier {
+class RegisterProvider extends ChangeNotifier {
   String? email;
   String? password;
 
@@ -22,4 +23,11 @@ class LoginProvider extends ChangeNotifier {
   void setPassword(String password) {
     this.password = password;
   }
+
+  User createAccount(String nombre, String edad, String ingresos) {
+    User user = User(name: nombre, age: "", ingresos: ingresos);
+    return user;
+  }
+
+  Future<void> createUser() async {}
 }

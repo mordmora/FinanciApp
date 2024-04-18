@@ -27,7 +27,8 @@ class MyApp extends StatelessWidget {
         );
       },
       providers: [
-        ChangeNotifierProvider<LoginProvider>(create: (_) => LoginProvider()),
+        ChangeNotifierProvider<RegisterProvider>(
+            create: (_) => RegisterProvider()),
       ],
     );
   }

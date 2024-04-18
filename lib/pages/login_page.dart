@@ -166,7 +166,9 @@ class LittleAccesWidget extends StatelessWidget {
                   style: TextStyle(
                       color: Colors.white, fontFamily: 'Poppins', fontSize: 20),
                 )),
-            onPressed: () {}),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
+            }),
       ],
     );
   }
