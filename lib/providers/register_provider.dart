@@ -24,8 +24,8 @@ class RegisterProvider extends ChangeNotifier {
     this.password = password;
   }
 
-  User createAccount(String nombre, String edad, String ingresos) {
-    User user = User(name: nombre, age: "", ingresos: ingresos);
+  User createAccount(String nombre, String age, String ingresos) {
+    User user = User(name: nombre, age: age, ingresos: ingresos);
     return user;
   }
 

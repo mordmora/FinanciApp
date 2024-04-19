@@ -1,10 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:finanzas/components/labeled_input_field.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:finanzas/models/user.dart';
 import 'package:finanzas/providers/register_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +23,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
   String _age = "";
   String _budgets = "";
   String terms = "0";
+  bool isLoading = false;
   late SharedPreferences prefs;
   getSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
@@ -70,10 +74,47 @@ class _CompleteProfileState extends State<CompleteProfile> {
     super.dispose();
   }
 
-  void _createUser() {
-    user = Provider.of<RegisterProvider>(context, listen: false)
-        .createAccount(_name, _age, _budgets);
-    saveIntoPrefs();
+  Future<bool> _createUser() async {
+    try {
+      user = Provider.of<RegisterProvider>(context, listen: false)
+          .createAccount(_name, _age, _budgets);
+      saveIntoPrefs();
+      Map<String, dynamic> data = {
+        "name": user.name,
+        "age": user.age,
+        "budget": user.ingresos,
+        "terms": terms,
+        "email":
+            Provider.of<RegisterProvider>(context, listen: false).getEmail(),
+        "password":
+            Provider.of<RegisterProvider>(context, listen: false).getPassword(),
+      };
+      print("i am here");
+
+      final Uri url =
+          Uri.parse("http://financiapp.pythonanywhere.com/register");
+      print("hop 1");
+      var response = await http.post(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data));
+      print("hop 2");
+      print(response.statusCode.toString());
+      if (response.statusCode == 200) {
+        print(response.statusCode.toString());
+        setState(() {});
+        return true;
+      } else {
+        print("error");
+        setState(() {});
+        return false;
+      }
+    } on SocketException catch (e) {
+      setState(() {});
+      print(e);
+      return false;
+    }
   }
 
   @override
@@ -240,9 +281,22 @@ class _CompleteProfileState extends State<CompleteProfile> {
                             ),
                             onPressed: _validCredentials()
                                 ? () {
-                                    _createUser();
-                                    Navigator.pushNamedAndRemoveUntil(
-                                        context, '/home', (_) => false);
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            '/home', (route) => false);
+//                                    _createUser().then((value) {
+//                                      if (value) {
+//                                        Navigator.of(context)
+//                                            .pushNamedAndRemoveUntil(
+//                                                '/home', (route) => false);
+//                                      } else {
+                                    //                                       ScaffoldMessenger.of(context)
+                                    //                                         .showSnackBar(const SnackBar(
+                                    //                                     content:
+                                    //                                       Text("Error al crear usuario"),
+                                    //                               ));
+                                    //                           }
+                                    //                       });
                                   }
                                 : null,
                             child: const Text(
