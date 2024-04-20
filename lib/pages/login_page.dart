@@ -1,8 +1,10 @@
+import 'package:finanzas/components/action_button.dart';
 import 'package:finanzas/components/input_field.dart';
 import 'package:finanzas/components/password_input_field.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,6 +14,50 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  String _email = "";
+  String _password = "";
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    _emailController.addListener(() {
+      _email = _emailController.text;
+    });
+
+    _passwordController.addListener(() {
+      _password = _passwordController.text;
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Future<String> loginUser(String email, String password) async {
+    Uri url = Uri.parse('http://financiapp.pythonanywhere.com/login');
+    try {
+      var response = await http.post(url, headers: {
+        'Content-Type': 'application/json'
+      }, body: {
+        'email': email,
+        'password': password,
+      });
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        return 'error';
+      }
+    } catch (e) {
+      print(e);
+      return 'error';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print(MediaQuery.of(context).size.height);
@@ -31,19 +77,16 @@ class _LoginPageState extends State<LoginPage> {
       ),
       backgroundColor: Palette.bg,
       body: Stack(
+        fit: StackFit.expand,
         children: [
           Container(
             alignment: Alignment.bottomCenter,
-            child: const Positioned(
-              bottom: 10,
-              left: 0,
-              right: 0,
-              child: Image(
-                  image: AssetImage(
-                    'lib/assets/images/wave-haikei.png',
-                  ),
-                  color: Palette.green),
-            ),
+            child: const Image(
+                fit: BoxFit.fill,
+                image: AssetImage(
+                  'lib/assets/images/wave-haikei.png',
+                ),
+                color: Palette.green),
           ),
           Container(
             padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
@@ -60,20 +103,28 @@ class _LoginPageState extends State<LoginPage> {
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Poppins'),
                   ),
-                  const CustomInputField(
+                  CustomInputField(
+                    controller: _emailController,
                     height: 70,
                     color: Colors.white,
                     labelText: 'Email',
                     hintText: 'Ingresa tu email',
                   ),
-                  const CustomPasswordInputField(
+                  CustomPasswordInputField(
+                    controller: _passwordController,
                     height: 70,
                     color: Colors.white,
                     labelText: 'Contraseña',
                     hintText: 'Ingresa tu contraseña',
                   ),
                   const SizedBox(height: 20),
-                  const LittleAccesWidget(),
+                  ActionButton(
+                    onPressed: () {
+                      print(loginUser(_email, _password));
+                      setState(() {});
+                      print("$_email, $_password");
+                    },
+                  ),
                   Padding(
                     padding:
                         const EdgeInsets.only(top: 30, right: 20, left: 20),
@@ -118,58 +169,6 @@ class _LoginPageState extends State<LoginPage> {
           )
         ],
       ),
-    );
-  }
-}
-
-class LittleAccesWidget extends StatelessWidget {
-  const LittleAccesWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        TextButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/recovery/Password');
-            },
-            style: const ButtonStyle(
-                overlayColor: MaterialStatePropertyAll(Colors.transparent)),
-            child: const Padding(
-              padding: EdgeInsets.only(left: 8.0),
-              child: Text('Olvidaste tu contraseña?',
-                  style: TextStyle(fontFamily: 'Poppins')),
-            )),
-        CupertinoButton(
-            padding: EdgeInsets.zero,
-            child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width / 25,
-                    vertical: 15),
-                decoration: BoxDecoration(
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 3.0,
-                      spreadRadius: 0.0,
-                      offset: Offset(0.0, 2.0),
-                    )
-                  ],
-                  color: Palette.purple,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: const Text(
-                  'Acceder',
-                  style: TextStyle(
-                      color: Colors.white, fontFamily: 'Poppins', fontSize: 20),
-                )),
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
-            }),
-      ],
     );
   }
 }

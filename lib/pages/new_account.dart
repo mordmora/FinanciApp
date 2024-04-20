@@ -76,11 +76,12 @@ class _NewAccountState extends State<NewAccount> {
       body: SafeArea(
         child: Stack(
           children: [
-            Align(
+            Container(
                 alignment: Alignment.bottomCenter,
                 child: Image.asset(
                   "lib/assets/images/wave-haikei.png",
                   color: Palette.green,
+                  fit: BoxFit.fill,
                 )),
             Column(
               children: [

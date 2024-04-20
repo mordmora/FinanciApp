@@ -5,8 +5,10 @@ class CustomInputField extends StatefulWidget {
   final Color color;
   final String? labelText;
   final String? hintText;
+  final TextEditingController controller;
   const CustomInputField(
       {super.key,
+      required this.controller,
       required this.height,
       required this.color,
       this.labelText,
@@ -24,34 +26,35 @@ class _CustomInputFieldState extends State<CustomInputField> {
       child: SizedBox(
         height: 70,
         child: TextFormField(
+            controller: widget.controller,
             decoration: InputDecoration(
-          label: Text(
-            widget.labelText ?? '',
-            style: const TextStyle(fontFamily: 'Poppins', fontSize: 13),
-          ),
-          hintText: widget.hintText ?? '',
-          hintStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 13),
-          fillColor: Colors.white,
-          filled: true,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(10),
-            ),
-            borderSide: BorderSide(color: widget.color, width: 0),
-          ),
-          focusedBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
+              label: Text(
+                widget.labelText ?? '',
+                style: const TextStyle(fontFamily: 'Poppins', fontSize: 13),
               ),
-              borderSide: BorderSide(color: Colors.white, width: 0)),
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
-            ),
-            borderSide: BorderSide(
-                color: Colors.white, width: 0, style: BorderStyle.none),
-          ),
-        )),
+              hintText: widget.hintText ?? '',
+              hintStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 13),
+              fillColor: Colors.white,
+              filled: true,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(10),
+                ),
+                borderSide: BorderSide(color: widget.color, width: 0),
+              ),
+              focusedBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                  borderSide: BorderSide(color: Colors.white, width: 0)),
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+                borderSide: BorderSide(
+                    color: Colors.white, width: 0, style: BorderStyle.none),
+              ),
+            )),
       ),
     );
   }

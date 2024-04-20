@@ -5,6 +5,7 @@ import 'package:finanzas/components/labeled_input_field.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:finanzas/models/user.dart';
 import 'package:finanzas/providers/register_provider.dart';
+import 'package:finanzas/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -74,51 +75,69 @@ class _CompleteProfileState extends State<CompleteProfile> {
     super.dispose();
   }
 
-  Future<bool> _createUser() async {
-    try {
-      user = Provider.of<RegisterProvider>(context, listen: false)
-          .createAccount(_name, _age, _budgets);
-      saveIntoPrefs();
-      Map<String, dynamic> data = {
-        "name": user.name,
-        "age": user.age,
-        "budget": user.ingresos,
-        "terms": terms,
-        "email":
-            Provider.of<RegisterProvider>(context, listen: false).getEmail(),
-        "password":
-            Provider.of<RegisterProvider>(context, listen: false).getPassword(),
-      };
-      print("i am here");
-
-      final Uri url =
-          Uri.parse("http://financiapp.pythonanywhere.com/register");
-      print("hop 1");
-      var response = await http.post(url,
-          headers: <String, String>{
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(data));
-      print("hop 2");
-      print(response.statusCode.toString());
-      if (response.statusCode == 200) {
-        print(response.statusCode.toString());
-        setState(() {});
-        return true;
-      } else {
-        print("error");
-        setState(() {});
-        return false;
-      }
-    } on SocketException catch (e) {
-      setState(() {});
-      print(e);
-      return false;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    Future<bool> _createUser() async {
+      try {
+        user = Provider.of<RegisterProvider>(context, listen: false)
+            .createAccount(_name, _age, _budgets);
+        saveIntoPrefs();
+        var fullName = sliceFullName(user.name);
+        Map<String, dynamic> data = {
+          "first_name": fullName['firstName'],
+          "last_name": fullName['lastName'],
+          "budget": double.parse(user.ingresos),
+          "term": int.parse(terms),
+          "email":
+              Provider.of<RegisterProvider>(context, listen: false).getEmail(),
+          "password": Provider.of<RegisterProvider>(context, listen: false)
+              .getPassword(),
+        };
+        print("i am here");
+        print(jsonEncode(data));
+
+        final Uri url =
+            Uri.parse("http://financiapp.pythonanywhere.com/register");
+        print("hop 1");
+        var response = await http.post(url,
+            headers: <String, String>{
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode(data));
+        print("hop 2");
+        print(response.statusCode.toString());
+        if (response.statusCode == 200) {
+          print(response.statusCode.toString());
+          setState(() {});
+          return true;
+        } else {
+          if (response.statusCode == 400) {
+            String strResponse = jsonDecode(response.body)["error"];
+            if (strResponse.isNotEmpty || strResponse.contains("error")) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text(
+                  "El email ya se encuentra registrado",
+                  style: TextStyle(
+                      color: Colors.black, fontFamily: 'Poppins', fontSize: 15),
+                ),
+                backgroundColor: Palette.purple,
+                behavior: SnackBarBehavior.floating,
+                duration: Duration(seconds: 3),
+                elevation: 4,
+              ));
+            }
+          }
+          print("error");
+          setState(() {});
+          return false;
+        }
+      } on SocketException catch (e) {
+        setState(() {});
+        print(e);
+        return false;
+      }
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Palette.bg,
@@ -127,8 +146,9 @@ class _CompleteProfileState extends State<CompleteProfile> {
           children: [
             const Positioned(
               bottom: 0,
-              child:
-                  Image(image: AssetImage("lib/assets/images/wave-haikei.png")),
+              child: Image(
+                  image: AssetImage("lib/assets/images/wave-haikei.png"),
+                  fit: BoxFit.fill),
             ),
             Padding(
               padding:
@@ -183,7 +203,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
                       onChanged: (value) {
                         setState(() {});
                       },
-                      borderColor: _name.isEmpty ? Palette.red : Colors.white,
+                      borderColor: validName(_name) ? Colors.white : Colors.red,
                       controller: _nameController,
                     ),
                     const SizedBox(
@@ -281,22 +301,19 @@ class _CompleteProfileState extends State<CompleteProfile> {
                             ),
                             onPressed: _validCredentials()
                                 ? () {
-                                    Navigator.of(context)
-                                        .pushNamedAndRemoveUntil(
-                                            '/home', (route) => false);
-//                                    _createUser().then((value) {
-//                                      if (value) {
-//                                        Navigator.of(context)
-//                                            .pushNamedAndRemoveUntil(
-//                                                '/home', (route) => false);
-//                                      } else {
-                                    //                                       ScaffoldMessenger.of(context)
-                                    //                                         .showSnackBar(const SnackBar(
-                                    //                                     content:
-                                    //                                       Text("Error al crear usuario"),
-                                    //                               ));
-                                    //                           }
-                                    //                       });
+                                    //Navigator.of(context)
+                                    //    .pushNamedAndRemoveUntil(
+                                    //        '/home', (route) => false);
+                                    _createUser().then((value) {
+                                      if (value) {
+                                        print("Usuario creado");
+                                        Navigator.of(context)
+                                            .pushNamedAndRemoveUntil(
+                                                '/home', (route) => false);
+                                      } else {
+                                        print("Error al crear usuario");
+                                      }
+                                    });
                                   }
                                 : null,
                             child: const Text(

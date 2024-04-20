@@ -5,8 +5,10 @@ class CustomPasswordInputField extends StatefulWidget {
   final Color color;
   final String? labelText;
   final String? hintText;
+  final TextEditingController controller;
   const CustomPasswordInputField(
       {super.key,
+      required this.controller,
       required this.height,
       required this.color,
       this.labelText,
@@ -37,6 +39,7 @@ class _CustomInputFieldState extends State<CustomPasswordInputField> {
       child: SizedBox(
         height: 70,
         child: TextFormField(
+            controller: widget.controller,
             obscureText: _isObscured!,
             decoration: InputDecoration(
               suffixIcon: IconButton(

@@ -39,6 +39,6 @@ class _EntryPointState extends State<EntryPoint> {
 
   @override
   Widget build(BuildContext context) {
-    return LoginPage();
+    return const LoginPage();
   }
 }
