@@ -25,6 +25,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
   String _budgets = "";
   String terms = "0";
   bool isLoading = false;
+
   late SharedPreferences prefs;
   getSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
@@ -111,23 +112,22 @@ class _CompleteProfileState extends State<CompleteProfile> {
           setState(() {});
           return true;
         } else {
-          if (response.statusCode == 400) {
-            String strResponse = jsonDecode(response.body)["error"];
-            if (strResponse.isNotEmpty || strResponse.contains("error")) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text(
-                  "El email ya se encuentra registrado",
+          String strResponse = jsonDecode(response.body)["error"];
+          String message = jsonDecode(response.body)["message"];
+          print(message);
+          if (strResponse.isNotEmpty || strResponse.contains("error")) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(message,
                   style: TextStyle(
-                      color: Colors.black, fontFamily: 'Poppins', fontSize: 15),
-                ),
-                backgroundColor: Palette.purple,
-                behavior: SnackBarBehavior.floating,
-                duration: Duration(seconds: 3),
-                elevation: 4,
-              ));
-            }
+                      color: Colors.white,
+                      fontFamily: 'Poppins',
+                      fontSize: 15)),
+              backgroundColor: Palette.purple,
+              behavior: SnackBarBehavior.fixed,
+              duration: Duration(seconds: 5),
+              elevation: 4,
+            ));
           }
-          print("error");
           setState(() {});
           return false;
         }
@@ -194,7 +194,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
                       textInputType: TextInputType.name,
                       formatter: [
                         FilteringTextInputFormatter.allow(
-                            RegExp(r'^[a-zA-Z\s]+$'),
+                            RegExp(r'[a-zA-Z\s]+$'),
                             replacementString: _nameController.text),
                       ],
                       hintText: "Ej. Andrés Felipe",

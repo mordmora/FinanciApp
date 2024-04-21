@@ -1,1 +1,6 @@
+<<<<<<< HEAD
+=======
+description: This file stores settings for Dart & Flutter DevTools.
+documentation: https://docs.flutter.dev/tools/devtools/extensions#configure-extension-enablement-states
+>>>>>>> 47350000a3ea5a4a9940cc8b0e14ec96c293dd4f
 extensions:
