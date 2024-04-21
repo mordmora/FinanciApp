@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:finanzas/components/action_button.dart';
 import 'package:finanzas/components/input_field.dart';
 import 'package:finanzas/components/password_input_field.dart';
 import 'package:finanzas/configurations/color_palette.dart';
+import 'package:finanzas/providers/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -41,16 +45,20 @@ class _LoginPageState extends State<LoginPage> {
   Future<String> loginUser(String email, String password) async {
     Uri url = Uri.parse('http://financiapp.pythonanywhere.com/login');
     try {
-      var response = await http.post(url, headers: {
-        'Content-Type': 'application/json'
-      }, body: {
+      Map<String, String> data = {
         'email': email,
         'password': password,
-      });
+      };
+
+      var response = await http.post(url,
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(data));
       if (response.statusCode == 200) {
-        return response.body;
+        String token = jsonDecode(response.body)["token"];
+        return token;
       } else {
-        return 'error';
+        String error = jsonDecode(response.body)["message"];
+        return error;
       }
     } catch (e) {
       print(e);
@@ -120,9 +128,12 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 20),
                   ActionButton(
                     onPressed: () {
-                      print(loginUser(_email, _password));
+                      Provider.of<AuthProvider>(context, listen: false)
+                          .loginUser(_email, _password)
+                          .then((value) {
+                        Navigator.pushNamed(context, '/home');
+                      });
                       setState(() {});
-                      print("$_email, $_password");
                     },
                   ),
                   Padding(

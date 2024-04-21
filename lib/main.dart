@@ -1,4 +1,5 @@
 import 'package:finanzas/configurations/route_generator.dart';
+import 'package:finanzas/providers/auth_provider.dart';
 import 'package:finanzas/providers/register_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +29,9 @@ class MyApp extends StatelessWidget {
       },
       providers: [
         ChangeNotifierProvider<RegisterProvider>(
-            create: (_) => RegisterProvider()),
+          create: (_) => RegisterProvider(),
+        ),
+        ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
       ],
     );
   }

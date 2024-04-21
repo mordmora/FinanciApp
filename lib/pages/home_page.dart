@@ -1,6 +1,8 @@
+import 'package:finanzas/components/transaction_component.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -173,64 +175,29 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-                                  SizedBox(
+                                  Container(
                                     height: 320,
-                                    child: ListView(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(15),
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10)),
-                                            color: Color(0xFFF1F4F8),
-                                          ),
-                                          child: const Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    CircleAvatar(
-                                                        backgroundColor:
-                                                            Color(0xFF6D5FED),
-                                                        radius: 30,
-                                                        child: Icon(
-                                                          Icons.monetization_on,
-                                                        )),
-                                                    SizedBox(width: 20),
-                                                    Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text("Horas extras",
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    'Poppins',
-                                                                fontSize: 20,
-                                                              )),
-                                                          Text("Ingreso",
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    'Poppins',
-                                                              ))
-                                                        ]),
-                                                  ],
-                                                ),
-                                                Text("\$10.000",
-                                                    style: TextStyle(
-                                                      fontFamily: 'Poppins',
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Palette.purple,
-                                                    ))
-                                              ]),
-                                        ),
-                                      ],
+                                    child: ListView.builder(
+                                      itemCount: 2,
+                                      itemBuilder: (contex, index) {},
                                     ),
                                   )
+/*                                   Container(
+                                    height: 320,
+                                    child: ListView(children: const [
+                                      TransactionComponent(
+                                        name: "dsdsd",
+                                        value: 0,
+                                        type: "sdwdwd",
+                                      ),
+                                      
+                                      TransactionComponent(
+                                        name: "sssss",
+                                        value: 1110,
+                                        type: "sdwdwdddddd",
+                                      )
+                                    ]),
+                                  ) */
                                 ],
                               ))),
                     ],
