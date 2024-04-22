@@ -66,7 +66,7 @@ class _NewAccountState extends State<NewAccount> {
 
   @override
   Widget build(BuildContext context) {
-    RegisterProvider loginProvider = Provider.of<RegisterProvider>(context);
+    RegisterProvider registerProvider = Provider.of<RegisterProvider>(context);
 
     final width = MediaQuery.of(context).size.width;
 
@@ -109,6 +109,7 @@ class _NewAccountState extends State<NewAccount> {
                               _validEmail() ? Colors.white : Palette.red,
                           label: "Email",
                           isPassword: false,
+                          maxLines: 1,
                           controller: _emailController,
                           onChanged: (value) {
                             setState(() {});
@@ -120,6 +121,7 @@ class _NewAccountState extends State<NewAccount> {
                           ]),
                       const SizedBox(height: 10),
                       LabeledTextField(
+                        maxLines: 1,
                         borderColor: _password == _repeatPassword
                             ? Colors.white
                             : Palette.red,
@@ -132,6 +134,7 @@ class _NewAccountState extends State<NewAccount> {
                       ),
                       const SizedBox(height: 10),
                       LabeledTextField(
+                          maxLines: 1,
                           borderColor: _password == _repeatPassword
                               ? Colors.white
                               : Palette.red,
@@ -153,8 +156,8 @@ class _NewAccountState extends State<NewAccount> {
                             borderRadius: BorderRadius.circular(30),
                             onPressed: _validCredentials()
                                 ? () {
-                                    loginProvider.setEmail(_email);
-                                    loginProvider.setPassword(_password);
+                                    registerProvider.setEmail(_email);
+                                    registerProvider.setPassword(_password);
                                     Navigator.pushNamed(
                                         context, '/completeProfile');
                                   }

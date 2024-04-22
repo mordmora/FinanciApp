@@ -69,6 +69,8 @@ flutter:
      #- lib\assets\images\stacked-waves-haikei.png
      - lib\assets\images\arrows.png
      - lib\assets\images\wave-haikei.png
+     - lib\assets\images\asc.png
+     - lib\assets\images\descendiendo.png
 
 
 

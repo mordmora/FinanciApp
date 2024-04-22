@@ -1,10 +1,13 @@
 import 'package:finanzas/components/labeled_input_field.dart';
 import 'package:finanzas/components/outlined_text_field.dart';
 import 'package:finanzas/configurations/color_palette.dart';
+import 'package:finanzas/models/budgets.dart';
+import 'package:finanzas/providers/auth_provider.dart';
+import 'package:finanzas/providers/budgets_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class AddBudget extends StatefulWidget {
   const AddBudget({super.key});
@@ -46,6 +49,9 @@ class _AddBudgetState extends State<AddBudget> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final budgetProvider = Provider.of<BudgetProvider>(context, listen: false);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Palette.purple,
@@ -69,7 +75,8 @@ class _AddBudgetState extends State<AddBudget> {
               child: SafeArea(
                 child: Column(mainAxisSize: MainAxisSize.max, children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -83,7 +90,7 @@ class _AddBudgetState extends State<AddBudget> {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            icon: Icon(Icons.close, size: 40))
+                            icon: const Icon(Icons.close, size: 40))
                       ],
                     ),
                   ),
@@ -141,12 +148,13 @@ class _AddBudgetState extends State<AddBudget> {
               )),
           Expanded(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               child: SizedBox(
                 width: double.infinity,
                 height: 60,
                 child: CupertinoButton(
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   color: Palette.purple,
                   child: const Text(
                     'Confirmar',
@@ -155,7 +163,15 @@ class _AddBudgetState extends State<AddBudget> {
                         fontFamily: 'Poppins',
                         fontSize: 24),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Budget budget = Budget(
+                        amount: double.parse(value),
+                        type: "egreso",
+                        name: _motive,
+                        description: _reason);
+                    String token = authProvider.token;
+                    BudgetProvider().addBudget(budget, token);
+                  },
                 ),
               ),
             ),

@@ -108,18 +108,17 @@ class _CompleteProfileState extends State<CompleteProfile> {
 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(message,
-              style: TextStyle(
+              style: const TextStyle(
                   color: Colors.white, fontFamily: 'Poppins', fontSize: 15)),
           backgroundColor: color,
           behavior: SnackBarBehavior.fixed,
-          duration: Duration(seconds: 5),
+          duration: const Duration(seconds: 5),
           elevation: 4,
         ));
         setState(() {});
         return retorna;
       } on SocketException catch (e) {
         setState(() {});
-        print(e);
         return false;
       }
     }

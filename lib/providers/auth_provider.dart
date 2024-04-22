@@ -22,16 +22,15 @@ class AuthProvider extends ChangeNotifier {
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(data));
       if (response.statusCode == 200) {
+        if (response.body.contains("token")) {}
         String token = jsonDecode(response.body)["token"];
         prefs.setString("token", token);
-        print(prefs.getString("token"));
         return token;
       } else {
         String error = jsonDecode(response.body)["message"];
         return error;
       }
     } catch (e) {
-      print(e);
       return 'error';
     }
   }

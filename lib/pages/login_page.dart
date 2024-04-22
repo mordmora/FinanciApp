@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,8 +25,14 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  late SharedPreferences prefs;
+  getSharedPreferences() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
   @override
   void initState() {
+    getSharedPreferences();
     _emailController.addListener(() {
       _email = _emailController.text;
     });
@@ -128,10 +135,19 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 20),
                   ActionButton(
                     onPressed: () {
+                      FocusScope.of(context).unfocus();
                       Provider.of<AuthProvider>(context, listen: false)
                           .loginUser(_email, _password)
                           .then((value) {
-                        Navigator.pushNamed(context, '/home');
+                        if (value.contains("incorrectos")) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                            value,
+                          )));
+                        } else {
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, '/home', (route) => false);
+                        }
                       });
                       setState(() {});
                     },

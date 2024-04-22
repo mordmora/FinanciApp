@@ -1,5 +1,6 @@
 import 'package:finanzas/configurations/route_generator.dart';
 import 'package:finanzas/providers/auth_provider.dart';
+import 'package:finanzas/providers/budgets_provider.dart';
 import 'package:finanzas/providers/register_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +26,10 @@ class MyApp extends StatelessWidget {
             devicePixelRatio: 1,
           ),
           child: Theme(
-            data: ThemeData(brightness: Brightness.dark),
+            data: ThemeData(
+              brightness: Brightness.dark,
+              fontFamily: 'Poppins',
+            ),
             child: MaterialApp(
               theme: ThemeData(brightness: Brightness.light),
               title: 'Flutter Demo',
@@ -41,6 +45,9 @@ class MyApp extends StatelessWidget {
           create: (_) => RegisterProvider(),
         ),
         ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+        ChangeNotifierProvider<BudgetProvider>(
+          create: (_) => BudgetProvider(),
+        )
       ],
     );
   }

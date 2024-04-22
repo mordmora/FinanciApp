@@ -5,6 +5,7 @@ import 'package:finanzas/pages/confirmation_recovery.dart';
 import 'package:finanzas/pages/forgot_password.dart';
 import 'package:finanzas/pages/home_page.dart';
 import 'package:finanzas/pages/login_page.dart';
+import 'package:finanzas/pages/my_budgets.dart';
 import 'package:finanzas/pages/new_account.dart';
 
 import '../pages/entry_point.dart';
@@ -30,6 +31,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/addBudget':
         return MaterialPageRoute(builder: (context) => const AddBudget());
+      case '/myBudgets':
+        return MaterialPageRoute(builder: (context) => const Mybudgets());
       default:
         return MaterialPageRoute(builder: (context) => const EntryPoint());
     }
