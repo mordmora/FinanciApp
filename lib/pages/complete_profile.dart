@@ -33,14 +33,6 @@ class _CompleteProfileState extends State<CompleteProfile> {
 
   List<bool> values = [true, false];
 
-  saveIntoPrefs() async {
-    prefs = await SharedPreferences.getInstance();
-    prefs.setString("name", _name);
-    prefs.setString("age", _age);
-    prefs.setString("budget", _budgets);
-    prefs.setString("terms", terms);
-  }
-
   late User user;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
@@ -82,7 +74,6 @@ class _CompleteProfileState extends State<CompleteProfile> {
       try {
         user = Provider.of<RegisterProvider>(context, listen: false)
             .createAccount(_name, _age, _budgets);
-        saveIntoPrefs();
         var fullName = sliceFullName(user.name);
         Map<String, dynamic> data = {
           "first_name": fullName['firstName'],
@@ -94,8 +85,6 @@ class _CompleteProfileState extends State<CompleteProfile> {
           "password": Provider.of<RegisterProvider>(context, listen: false)
               .getPassword(),
         };
-        print("i am here");
-        print(jsonEncode(data));
 
         final Uri url =
             Uri.parse("http://financiapp.pythonanywhere.com/register");
@@ -105,32 +94,29 @@ class _CompleteProfileState extends State<CompleteProfile> {
               'Content-Type': 'application/json',
             },
             body: jsonEncode(data));
-        print("hop 2");
-        print(response.statusCode.toString());
+        bool retorna = false;
+        Color color = Palette.red;
+        String message;
         if (response.statusCode == 200) {
-          print(response.statusCode.toString());
-          setState(() {});
-          return true;
+          color = Palette.green;
+          retorna = true;
+          message = "Usuario creado correctamente";
+          prefs.setString('token', jsonDecode(response.body)["token"]);
         } else {
-          String strResponse = jsonDecode(response.body)["error"];
-          String message = jsonDecode(response.body)["message"];
-          print(message);
-          if (strResponse.isNotEmpty || strResponse.contains("error")) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(message,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Poppins',
-                      fontSize: 15)),
-              backgroundColor: Palette.purple,
-              behavior: SnackBarBehavior.fixed,
-              duration: Duration(seconds: 5),
-              elevation: 4,
-            ));
-          }
-          setState(() {});
-          return false;
+          message = jsonDecode(response.body)["message"];
         }
+
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(message,
+              style: TextStyle(
+                  color: Colors.white, fontFamily: 'Poppins', fontSize: 15)),
+          backgroundColor: color,
+          behavior: SnackBarBehavior.fixed,
+          duration: Duration(seconds: 5),
+          elevation: 4,
+        ));
+        setState(() {});
+        return retorna;
       } on SocketException catch (e) {
         setState(() {});
         print(e);

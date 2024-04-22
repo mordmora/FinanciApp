@@ -178,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                                   Container(
                                     height: 320,
                                     child: ListView.builder(
-                                      itemCount: 3,
+                                      itemCount: 2,
                                       itemBuilder: (contex, index) {},
                                     ),
                                   )
