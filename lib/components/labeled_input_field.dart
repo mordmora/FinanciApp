@@ -7,8 +7,11 @@ class LabeledTextField extends StatefulWidget {
   final TextEditingController controller;
   final void Function(String)? onChanged;
   final List<TextInputFormatter>? formatter;
+  final Color? color;
   final Color borderColor;
   final String? hintText;
+  final int? minLines;
+  final int? maxLines;
   final TextInputType? textInputType;
   const LabeledTextField(
       {super.key,
@@ -16,6 +19,9 @@ class LabeledTextField extends StatefulWidget {
       required this.isPassword,
       required this.controller,
       required this.borderColor,
+      this.minLines,
+      this.maxLines,
+      this.color,
       this.textInputType,
       this.hintText,
       this.onChanged,
@@ -39,7 +45,7 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
     Color borderCol = widget.borderColor;
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: widget.color ?? Colors.white,
           border: Border(
               bottom: BorderSide(
                 color: borderCol,
@@ -65,7 +71,14 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
             inputFormatters: widget.formatter,
             onChanged: widget.onChanged,
             controller: widget.controller,
+            minLines: widget.minLines,
+            maxLines: widget.maxLines,
             obscureText: isObscured,
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              color: Colors.black,
+              fontSize: 20,
+            ),
             cursorColor: Colors.black,
             decoration: InputDecoration(
                 hintText: widget.hintText,

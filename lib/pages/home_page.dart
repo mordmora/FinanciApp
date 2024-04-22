@@ -2,6 +2,7 @@ import 'package:finanzas/components/transaction_component.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,6 +46,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Palette.bg,
       body: SafeArea(
         child: Container(
@@ -77,6 +79,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(width: 15),
                         Column(
+                            mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -94,13 +97,16 @@ class _HomePageState extends State<HomePage> {
                                           color: Palette.purple)),
                                 ],
                               ),
-                              const Text(
-                                "Sus últimas actualizaciones están a continuación.",
-                                style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 13,
-                                    letterSpacing: -0.6),
-                                overflow: TextOverflow.clip,
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.65,
+                                child: const Text(
+                                  "Sus últimas actualizaciones están a continuación.",
+                                  maxLines: 4,
+                                  style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 15,
+                                      letterSpacing: -0.6),
+                                ),
                               ),
                             ])
                       ])),
@@ -204,20 +210,24 @@ class _HomePageState extends State<HomePage> {
                   )
                 ]),
               ),
-              Container(
-                alignment: Alignment.center,
-                child: CupertinoButton(
-                  onPressed: () {},
-                  child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      child: const Text(
-                        "Agregar movimiento",
-                        style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 18,
-                            color: Colors.black),
-                      )),
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: CupertinoButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/addBudget');
+                    },
+                    child: Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        child: const Text(
+                          "Agregar movimiento",
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 18,
+                              color: Colors.black),
+                        )),
+                  ),
                 ),
               )
             ],

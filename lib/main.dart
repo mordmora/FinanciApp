@@ -19,12 +19,21 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       builder: (context, _) {
-        return MaterialApp(
-          theme: ThemeData(brightness: Brightness.light),
-          title: 'Flutter Demo',
-          initialRoute: '/',
-          onGenerateRoute: RouteGenerator.generateRoute,
-          debugShowCheckedModeBanner: false,
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.linear(1),
+            devicePixelRatio: 1,
+          ),
+          child: Theme(
+            data: ThemeData(brightness: Brightness.dark),
+            child: MaterialApp(
+              theme: ThemeData(brightness: Brightness.light),
+              title: 'Flutter Demo',
+              initialRoute: '/',
+              onGenerateRoute: RouteGenerator.generateRoute,
+              debugShowCheckedModeBanner: false,
+            ),
+          ),
         );
       },
       providers: [
