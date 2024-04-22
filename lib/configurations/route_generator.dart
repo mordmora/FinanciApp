@@ -1,4 +1,5 @@
 // ignore: file_names
+import 'package:finanzas/pages/add_budget.dart';
 import 'package:finanzas/pages/complete_profile.dart';
 import 'package:finanzas/pages/confirmation_recovery.dart';
 import 'package:finanzas/pages/forgot_password.dart';
@@ -27,6 +28,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => const CompleteProfile());
       case '/home':
         return MaterialPageRoute(builder: (context) => const HomePage());
+      case '/addBudget':
+        return MaterialPageRoute(builder: (context) => const AddBudget());
       default:
         return MaterialPageRoute(builder: (context) => const EntryPoint());
     }
