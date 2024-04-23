@@ -21,6 +21,7 @@ class _AddBudgetState extends State<AddBudget> {
   String _motive = "";
   String _reason = "";
   bool budgetAlert = false;
+
   final _reasonController = TextEditingController();
   final valueController = TextEditingController();
   final _motiveController = TextEditingController();
@@ -57,7 +58,6 @@ class _AddBudgetState extends State<AddBudget> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     //final budgetProvider = Provider.of<BudgetProvider>(context, listen: false);
 
     return Scaffold(
@@ -177,10 +177,27 @@ class _AddBudgetState extends State<AddBudget> {
                     if (validMovement()) {
                       Budget budget = Budget(
                           amount: double.parse(value),
-                          type: "egreso",
+                          type: "payment",
                           name: _motive,
                           description: _reason);
-                      BudgetProvider().addBudget(budget, authProvider.token);
+                      Provider.of<BudgetProvider>(context, listen: false)
+                          .addBudget(budget)
+                          .then((value) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(value[1]["message"],
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Poppins',
+                                  fontSize: 15)),
+                          backgroundColor:
+                              (value[0] == 200) ? Palette.green : Palette.red,
+                          behavior: SnackBarBehavior.fixed,
+                          duration: const Duration(seconds: 5),
+                          elevation: 4,
+                        ));
+                      });
+
+                      setState(() {});
                     } else {
                       budgetAlert = true;
                       setState(() {});

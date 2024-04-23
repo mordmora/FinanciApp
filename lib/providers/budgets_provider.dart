@@ -3,9 +3,15 @@ import 'dart:convert';
 import 'package:finanzas/models/budgets.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BudgetProvider extends ChangeNotifier {
-  Future<String> addBudget(Budget budget, String token) async {
+  late SharedPreferences prefs;
+  Future<List> addBudget(Budget budget) async {
+    prefs = await SharedPreferences.getInstance();
+
+    String token = prefs.getString("token") ?? "";
+
     try {
       final response = await http.post(
           Uri.parse(
@@ -15,17 +21,17 @@ class BudgetProvider extends ChangeNotifier {
             "Authorization": "Bearer $token"
           },
           body: jsonEncode(budget.toJson()));
-      if (response.statusCode == 200) {
-        print(response.body);
-        return response.body;
-      } else {
-        print("Error");
-        print(response.body);
-        return "Error";
-      }
+      print(jsonDecode(response.body));
+      print("Estado de codigo");
+      print(response.statusCode);
+
+      return [response.statusCode, jsonDecode(response.body)];
     } catch (e) {
       print(e.toString());
-      return "Error";
+      return [
+        500,
+        {"message": "Fallo en la conexión"}
+      ];
     }
   }
 }

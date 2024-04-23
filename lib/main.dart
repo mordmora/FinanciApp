@@ -2,6 +2,7 @@ import 'package:finanzas/configurations/route_generator.dart';
 import 'package:finanzas/providers/auth_provider.dart';
 import 'package:finanzas/providers/budgets_provider.dart';
 import 'package:finanzas/providers/register_provider.dart';
+import 'package:finanzas/providers/transactions_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +48,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
         ChangeNotifierProvider<BudgetProvider>(
           create: (_) => BudgetProvider(),
+        ),
+        ChangeNotifierProvider<TransactionsProvider>(
+          create: (_) => TransactionsProvider(),
         )
       ],
     );

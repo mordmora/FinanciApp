@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:finanzas/components/transaction_component.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:finanzas/models/logged_user.dart';
 
 import 'package:finanzas/providers/auth_provider.dart';
+import 'package:finanzas/providers/transactions_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +26,8 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = true;
   LoggedUser? user;
   late SharedPreferences prefs;
+
+  List<Widget> transactionList = [];
   readFromSharedPrefs() async {
     setState(() {
       name = prefs.getString("firstName") ?? "";
@@ -42,7 +47,24 @@ class _HomePageState extends State<HomePage> {
         .getUserData()
         .then((value) {
       getSharedPreferences();
-      _isLoading = false;
+    }).whenComplete(() {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+
+    Provider.of<TransactionsProvider>(context, listen: false)
+        .getTransactionsNow()
+        .then((value) {
+      value.forEach(
+        (element) {
+          transactionList.add(TransactionComponent(
+              name: element["name"],
+              type: (element["entry"] == true) ? "Ingreso" : "Gasto",
+              value: element["amount"]));
+          print(element);
+        },
+      );
     }).whenComplete(() {
       setState(() {
         _isLoading = false;
@@ -56,19 +78,6 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     super.dispose();
   }
-
-  List<Widget> transictionList = [
-    const TransactionComponent(
-      name: "Casa",
-      type: "Gasto",
-      value: 100,
-    ),
-    const TransactionComponent(
-      name: "Comida",
-      type: "Gasto",
-      value: 1040,
-    )
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -286,12 +295,12 @@ class _HomePageState extends State<HomePage> {
                                                   .height *
                                               0.4,
                                           child: ListView.builder(
-                                            itemCount: transictionList.length,
+                                            itemCount: transactionList.length,
                                             itemBuilder: (contex, index) {
                                               return Padding(
                                                 padding: const EdgeInsets.only(
                                                     bottom: 10),
-                                                child: transictionList[index],
+                                                child: transactionList[index],
                                               );
                                             },
                                           ),
