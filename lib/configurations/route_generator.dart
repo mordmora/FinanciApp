@@ -1,5 +1,5 @@
 // ignore: file_names
-import 'package:finanzas/pages/add_budget.dart';
+import 'package:finanzas/pages/add_movement.dart';
 import 'package:finanzas/pages/complete_profile.dart';
 import 'package:finanzas/pages/confirmation_recovery.dart';
 import 'package:finanzas/pages/forgot_password.dart';
@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    final args = settings.arguments;
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (context) => const EntryPoint());
@@ -29,8 +30,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => const CompleteProfile());
       case '/home':
         return MaterialPageRoute(builder: (context) => const HomePage());
-      case '/addBudget':
-        return MaterialPageRoute(builder: (context) => const AddBudget());
+      case '/addMovement':
+        return MaterialPageRoute(
+            builder: (context) =>
+                AddMovement(type: settings.arguments.toString()));
       case '/myBudgets':
         return MaterialPageRoute(builder: (context) => const Mybudgets());
       default:

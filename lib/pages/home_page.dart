@@ -1,11 +1,10 @@
-import 'dart:async';
-
 import 'package:finanzas/components/transaction_component.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:finanzas/models/logged_user.dart';
 
 import 'package:finanzas/providers/auth_provider.dart';
 import 'package:finanzas/providers/transactions_provider.dart';
+import 'package:finanzas/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -53,25 +52,26 @@ class _HomePageState extends State<HomePage> {
       });
     });
 
+    getTransactions();
+
+    super.initState();
+  }
+
+  void getTransactions() async {
     Provider.of<TransactionsProvider>(context, listen: false)
         .getTransactionsNow()
         .then((value) {
-      value.forEach(
-        (element) {
-          transactionList.add(TransactionComponent(
-              name: element["name"],
-              type: (element["entry"] == true) ? "Ingreso" : "Gasto",
-              value: element["amount"]));
-          print(element);
-        },
-      );
+      for (var element in value) {
+        transactionList.add(TransactionComponent(
+            name: element.name,
+            type: (element.entry == true) ? "Ingreso" : "Gasto",
+            value: element.amount));
+      }
     }).whenComplete(() {
       setState(() {
         _isLoading = false;
       });
     });
-
-    super.initState();
   }
 
   @override
@@ -317,7 +317,7 @@ class _HomePageState extends State<HomePage> {
                         child: CupertinoButton(
                           color: Colors.transparent,
                           onPressed: () {
-                            Navigator.pushNamed(context, '/addBudget');
+                            showModalSheet(context);
                           },
                           child: Container(
                               alignment: Alignment.center,

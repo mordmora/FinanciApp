@@ -6,7 +6,7 @@ Transaction transactionFromJson(String str) =>
 String transactionToJson(Transaction data) => json.encode(data.toJson());
 
 class Transaction {
-  int amount;
+  double amount;
   String name;
   String description;
   String date;

@@ -1,8 +1,12 @@
 import 'package:finanzas/components/movement_card.dart';
 import 'package:finanzas/configurations/color_palette.dart';
+import 'package:finanzas/models/transactions.dart';
+import 'package:finanzas/providers/transactions_provider.dart';
+import 'package:finanzas/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class Mybudgets extends StatefulWidget {
   const Mybudgets({super.key});
@@ -105,18 +109,12 @@ class _MybudgetsState extends State<Mybudgets> {
                     right: 20,
                     child: FloatingActionButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/addBudget');
+                        showModalSheet(context);
                       },
                       backgroundColor: const Color(0xFF39D2C0),
                       child: const Icon(Icons.add),
                     ),
                   )
-/*                   CupertinoButton(
-                      padding: EdgeInsets.all(30),
-                      borderRadius: BorderRadius.circular(100),
-                      color: Color(0xFF39D2C0),
-                      child: const Icon(Icons.add),
-                      onPressed: () {}) */
                 ],
               ),
             )

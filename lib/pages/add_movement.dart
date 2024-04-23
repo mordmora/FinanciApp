@@ -2,21 +2,21 @@ import 'package:finanzas/components/labeled_input_field.dart';
 import 'package:finanzas/components/outlined_text_field.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:finanzas/models/budgets.dart';
-import 'package:finanzas/providers/auth_provider.dart';
 import 'package:finanzas/providers/budgets_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class AddBudget extends StatefulWidget {
-  const AddBudget({super.key});
+class AddMovement extends StatefulWidget {
+  final String type;
+  const AddMovement({super.key, required this.type});
 
   @override
-  State<AddBudget> createState() => _AddBudgetState();
+  State<AddMovement> createState() => _AddMovementState();
 }
 
-class _AddBudgetState extends State<AddBudget> {
+class _AddMovementState extends State<AddMovement> {
   String value = "";
   String _motive = "";
   String _reason = "";
@@ -58,6 +58,7 @@ class _AddBudgetState extends State<AddBudget> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.type);
     //final budgetProvider = Provider.of<BudgetProvider>(context, listen: false);
 
     return Scaffold(
@@ -88,8 +89,8 @@ class _AddBudgetState extends State<AddBudget> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Registrar Egreso',
-                            style: TextStyle(
+                        Text('Registrar ${widget.type}',
+                            style: const TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 30,
                               fontWeight: FontWeight.w700,
@@ -175,9 +176,15 @@ class _AddBudgetState extends State<AddBudget> {
                   ),
                   onPressed: () {
                     if (validMovement()) {
+                      String typeMovement = "";
+                      if (widget.type == "ingreso") {
+                        typeMovement = "entry";
+                      } else if (widget.type == "egreso") {
+                        typeMovement = "payment";
+                      }
                       Budget budget = Budget(
                           amount: double.parse(value),
-                          type: "payment",
+                          type: typeMovement,
                           name: _motive,
                           description: _reason);
                       Provider.of<BudgetProvider>(context, listen: false)
@@ -195,7 +202,7 @@ class _AddBudgetState extends State<AddBudget> {
                           duration: const Duration(seconds: 5),
                           elevation: 4,
                         ));
-                      });
+                      }).whenComplete(() => Navigator.pop(context));
 
                       setState(() {});
                     } else {

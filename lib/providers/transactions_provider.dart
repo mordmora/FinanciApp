@@ -3,12 +3,11 @@ import 'package:finanzas/models/transactions.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:finanzas/components/transaction_component.dart';
 
 class TransactionsProvider extends ChangeNotifier {
   late SharedPreferences prefs;
 
-  Future<List> getTransactionsNow() async {
+  Future<List<Transaction>> getTransactionsNow() async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token') ?? "";
@@ -20,12 +19,16 @@ class TransactionsProvider extends ChangeNotifier {
       });
 
       if (response.statusCode == 200) {
-        List trans = jsonDecode(response.body)["transactions"];
+        List<Transaction> trans = [];
+        for (var item in (jsonDecode(response.body)["transactions"] as List)) {
+          trans.insert(0, Transaction.fromJson(item));
+        }
         return trans;
+      } else {
+        return [];
       }
     } catch (e) {
-      print(e);
+      return [];
     }
-    return [];
   }
 }
