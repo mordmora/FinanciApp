@@ -20,7 +20,7 @@ class _AddBudgetState extends State<AddBudget> {
   String value = "";
   String _motive = "";
   String _reason = "";
-
+  bool budgetAlert = false;
   final _reasonController = TextEditingController();
   final valueController = TextEditingController();
   final _motiveController = TextEditingController();
@@ -31,12 +31,20 @@ class _AddBudgetState extends State<AddBudget> {
       _reason = _reasonController.text;
     });
     valueController.addListener(() {
-      value = valueController.text;
+      value = valueController.text.isEmpty ? "0" : valueController.text;
     });
     _motiveController.addListener(() {
       _motive = _motiveController.text;
     });
     super.initState();
+  }
+
+  bool validMovement() {
+    if (value.isEmpty || value == "0") {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   @override
@@ -50,7 +58,7 @@ class _AddBudgetState extends State<AddBudget> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final budgetProvider = Provider.of<BudgetProvider>(context, listen: false);
+    //final budgetProvider = Provider.of<BudgetProvider>(context, listen: false);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -98,14 +106,16 @@ class _AddBudgetState extends State<AddBudget> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 20),
                     child: OutlinedTextField(
+                        borderColor: budgetAlert ? Colors.red : Colors.grey,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(10),
                         ],
                         controller: valueController,
-                        onChanged: (value) {
+                        onChanged: (input) {
+                          print(value);
                           setState(() {
-                            value = valueController.text;
+                            budgetAlert = false;
                           });
                         }),
                   ),
@@ -164,13 +174,17 @@ class _AddBudgetState extends State<AddBudget> {
                         fontSize: 24),
                   ),
                   onPressed: () {
-                    Budget budget = Budget(
-                        amount: double.parse(value),
-                        type: "egreso",
-                        name: _motive,
-                        description: _reason);
-                    String token = authProvider.token;
-                    BudgetProvider().addBudget(budget, token);
+                    if (validMovement()) {
+                      Budget budget = Budget(
+                          amount: double.parse(value),
+                          type: "egreso",
+                          name: _motive,
+                          description: _reason);
+                      BudgetProvider().addBudget(budget, authProvider.token);
+                    } else {
+                      budgetAlert = true;
+                      setState(() {});
+                    }
                   },
                 ),
               ),

@@ -1,14 +1,15 @@
-import 'package:finanzas/configurations/color_palette.dart';
 import 'package:flutter/material.dart';
 
 class MovementCard extends StatefulWidget {
   final String title;
   final String value;
   final String time;
+  final Color color;
   const MovementCard(
       {super.key,
       required this.title,
       required this.value,
+      required this.color,
       required this.time});
 
   @override
@@ -21,9 +22,9 @@ class _MovementCardState extends State<MovementCard> {
     double height = MediaQuery.of(context).size.height;
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Palette.purple,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+      decoration: BoxDecoration(
+        color: widget.color,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
       ),
       margin: const EdgeInsets.only(bottom: 10),
       height: height * 0.15,

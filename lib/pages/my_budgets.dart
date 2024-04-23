@@ -91,7 +91,10 @@ class _MybudgetsState extends State<Mybudgets> {
                   ListView.builder(
                       itemCount: 5,
                       itemBuilder: ((context, index) {
-                        return const MovementCard(
+                        return MovementCard(
+                          color: index < 1
+                              ? Palette.purple
+                              : Color.fromARGB(255, 155, 146, 238),
                           title: "Ingresos",
                           value: "-\$500.000",
                           time: "2 meses",
@@ -101,7 +104,9 @@ class _MybudgetsState extends State<Mybudgets> {
                     bottom: 20,
                     right: 20,
                     child: FloatingActionButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/addBudget');
+                      },
                       backgroundColor: const Color(0xFF39D2C0),
                       child: const Icon(Icons.add),
                     ),

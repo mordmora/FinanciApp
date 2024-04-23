@@ -5,9 +5,11 @@ class OutlinedTextField extends StatefulWidget {
   final void Function(String)? onChanged;
   final List<TextInputFormatter>? inputFormatters;
   final TextEditingController controller;
+  final Color borderColor;
   const OutlinedTextField(
       {super.key,
       this.onChanged,
+      required this.borderColor,
       required this.controller,
       this.inputFormatters});
 
@@ -35,8 +37,8 @@ class _OutlinedTextFieldState extends State<OutlinedTextField> {
             ),
             enabledBorder: UnderlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
-                borderSide: const BorderSide(
-                  color: Colors.grey,
+                borderSide: BorderSide(
+                  color: widget.borderColor,
                   style: BorderStyle.solid,
                 )),
             focusedBorder: UnderlineInputBorder(
