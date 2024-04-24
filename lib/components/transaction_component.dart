@@ -1,5 +1,7 @@
 import 'package:finanzas/configurations/color_palette.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:finanzas/components/movement_card.dart';
 
 class TransactionComponent extends StatefulWidget {
   final String name;
@@ -10,6 +12,24 @@ class TransactionComponent extends StatefulWidget {
 
   @override
   State<TransactionComponent> createState() => _TransactionComponentState();
+}
+
+class TransactionsComponentDetails extends StatefulWidget {
+  final String name;
+  final String date;
+  final double value;
+  final String description;
+
+  const TransactionsComponentDetails(
+      {super.key,
+      required this.name,
+      required this.date,
+      required this.value,
+      required this.description});
+
+  @override
+  State<TransactionsComponentDetails> createState() =>
+      _TransactionComponentDetailState();
 }
 
 class _TransactionComponentState extends State<TransactionComponent> {
@@ -54,4 +74,46 @@ class _TransactionComponentState extends State<TransactionComponent> {
       ]),
     );
   }
+}
+
+class _TransactionComponentDetailState
+    extends State<TransactionsComponentDetails> {
+  @override
+  Widget build(BuildContext context) {
+    String description = widget.description;
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: const Text("Descripción:"),
+                  content: Text(description),
+                ));
+      },
+      child: MovementCard(
+        color: Palette.purple,
+        title: widget.name,
+        value: widget.value.toString(),
+        time: widget.date.toString(),
+      ),
+    );
+  }
+  /* CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) => const AlertDialog(
+                                    title: Text("Descripcion :)")));
+                          },
+                          child: MovementCard(
+                            color: index < 1
+                                ? Palette.purple
+                                : const Color.fromARGB(255, 155, 146, 238),
+                            title: "Ingresos",
+                            value: "-\$500.000",
+                            time: "2 meses",
+                          ),
+                        ); */
 }

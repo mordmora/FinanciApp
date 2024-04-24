@@ -1,8 +1,12 @@
 import 'package:finanzas/components/movement_card.dart';
+import 'package:finanzas/components/transaction_component.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:finanzas/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:finanzas/providers/transactions_provider.dart';
 
 class Mybudgets extends StatefulWidget {
   const Mybudgets({super.key});
@@ -12,6 +16,42 @@ class Mybudgets extends StatefulWidget {
 }
 
 class _MybudgetsState extends State<Mybudgets> {
+  late SharedPreferences prefs;
+  String budgetText = "";
+  List<Widget> transactionList = [];
+
+  @override
+  void initState() {
+    getTransactions();
+
+    super.initState();
+  }
+
+  void getTransactions() async {
+    Provider.of<TransactionsProvider>(context, listen: false)
+        .getTransactionsNow()
+        .then((value) {
+      for (var element in value) {
+        transactionList.add(TransactionsComponentDetails(
+            name: element.name,
+            date: element.date,
+            value:
+                (element.entry == true) ? element.amount : element.amount * -1,
+            description: element.description));
+      }
+    }).whenComplete(() {
+      setState(() {});
+    });
+
+    Provider.of<TransactionsProvider>(context, listen: false)
+        .getBudget()
+        .then((budget) {
+      budgetText = budget;
+    }).whenComplete(() {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,11 +92,14 @@ class _MybudgetsState extends State<Mybudgets> {
                       const Text(
                         "Presupuesto",
                       ),
-                      const Text(
-                        "\$200'000.000",
+                      Text(
+                        formatearAMoneda(budgetText),
                         style: TextStyle(
                             fontSize: 40,
-                            color: Color.fromARGB(255, 117, 101, 255),
+                            color:
+                                (budgetText.length > 0 && budgetText[1] == "-")
+                                    ? Color.fromARGB(255, 255, 101, 101)
+                                    : Color.fromARGB(255, 117, 101, 255),
                             fontFamily: 'Poppins',
                             letterSpacing: -0.5,
                             fontWeight: FontWeight.w700),
@@ -89,24 +132,11 @@ class _MybudgetsState extends State<Mybudgets> {
               child: Stack(
                 children: [
                   ListView.builder(
-                      itemCount: 5,
+                      itemCount: transactionList.length,
                       itemBuilder: ((context, index) {
-                        return CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (context) => const AlertDialog(
-                                    title: Text("Descripcion :)")));
-                          },
-                          child: MovementCard(
-                            color: index < 1
-                                ? Palette.purple
-                                : const Color.fromARGB(255, 155, 146, 238),
-                            title: "Ingresos",
-                            value: "-\$500.000",
-                            time: "2 meses",
-                          ),
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: transactionList[index],
                         );
                       })),
                   Positioned(

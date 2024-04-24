@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   late SharedPreferences prefs;
 
   List<Widget> transactionList = [];
+
   readFromSharedPrefs() async {
     setState(() {
       name = prefs.getString("firstName") ?? "";
@@ -301,8 +302,8 @@ class _HomePageState extends State<HomePage> {
                                             itemCount: transactionList.length,
                                             itemBuilder: (contex, index) {
                                               return Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 10),
+                                                padding:
+                                                    EdgeInsets.only(bottom: 10),
                                                 child: transactionList[index],
                                               );
                                             },

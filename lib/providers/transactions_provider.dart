@@ -31,4 +31,27 @@ class TransactionsProvider extends ChangeNotifier {
       return [];
     }
   }
+
+  Future<String> getBudget() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ?? "";
+      Uri url =
+          Uri.parse('http://financiapp.pythonanywhere.com/users/getBudgetNow');
+      final response = await http.get(url, headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      });
+
+      if (response.statusCode == 200) {
+        String budget = jsonDecode(response.body)["budget"].toString();
+        return "\$$budget";
+      } else {
+        print(jsonDecode(response.body)["message"]);
+        return "\$0.00";
+      }
+    } catch (e) {
+      return "Error al obtener los datos";
+    }
+  }
 }

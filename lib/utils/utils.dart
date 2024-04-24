@@ -89,3 +89,40 @@ void showModalSheet(BuildContext context) {
             ]);
       });
 }
+
+String formatearAMoneda(String numero) {
+  print(numero);
+  // Convertir el número a String y dividirlo en partes enteras y decimales
+  List<String> partes = numero.split('.');
+
+  List<String> parteDos = [];
+
+  if (numero.contains("-")) {
+    parteDos = partes[0].split('-');
+  } else {
+    parteDos = partes[0].split('\$');
+  }
+  String parteEntera = parteDos.length > 1 ? parteDos[1] : "0";
+  String parteDecimal = partes.length > 1 ? partes[1] : "0";
+
+  print(parteDecimal);
+  print(parteEntera);
+  // Formatear la parte entera con comas cada tres dígitos
+  String parteEnteraFormateada = '';
+  for (int i = 0; i < parteEntera.length; i++) {
+    parteEnteraFormateada += parteEntera[i];
+    if ((parteEntera.length - i - 1) % 6 == 0 && i != parteEntera.length - 1) {
+      parteEnteraFormateada += "'";
+    }
+    if ((parteEntera.length - i - 1) % 3 == 0 && i != parteEntera.length - 1) {
+      parteEnteraFormateada += ",";
+    }
+  }
+
+  // Formatear la parte decimal con un punto y una coma
+  String parteDecimalFormateada = parteDecimal.padRight(
+      1, '0'); // Asegurarse de tener al menos un dígito decimal
+  String numeroFormateado = '$parteEnteraFormateada.$parteDecimalFormateada';
+
+  return "\$$numeroFormateado";
+}
