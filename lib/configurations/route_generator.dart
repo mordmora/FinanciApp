@@ -3,6 +3,7 @@ import 'package:finanzas/pages/add_movement.dart';
 import 'package:finanzas/pages/complete_profile.dart';
 import 'package:finanzas/pages/confirmation_recovery.dart';
 import 'package:finanzas/pages/forgot_password.dart';
+import 'package:finanzas/pages/graphics.dart';
 import 'package:finanzas/pages/home_page.dart';
 import 'package:finanzas/pages/login_page.dart';
 import 'package:finanzas/pages/my_budgets.dart';
@@ -36,6 +37,8 @@ class RouteGenerator {
                 AddMovement(type: settings.arguments.toString()));
       case '/myBudgets':
         return MaterialPageRoute(builder: (context) => const Mybudgets());
+      case '/graphics':
+        return MaterialPageRoute(builder: (context) => const Graphics());
       default:
         return MaterialPageRoute(builder: (context) => const EntryPoint());
     }

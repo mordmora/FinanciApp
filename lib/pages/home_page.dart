@@ -274,7 +274,10 @@ class _HomePageState extends State<HomePage> {
                                                                       .black)),
                                                         ]),
                                                   ),
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    Navigator.pushNamed(
+                                                        context, '/graphics');
+                                                  },
                                                 ),
                                               ],
                                             ),

@@ -1,12 +1,8 @@
 import 'package:finanzas/components/movement_card.dart';
 import 'package:finanzas/configurations/color_palette.dart';
-import 'package:finanzas/models/transactions.dart';
-import 'package:finanzas/providers/transactions_provider.dart';
 import 'package:finanzas/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 class Mybudgets extends StatefulWidget {
   const Mybudgets({super.key});
@@ -95,13 +91,22 @@ class _MybudgetsState extends State<Mybudgets> {
                   ListView.builder(
                       itemCount: 5,
                       itemBuilder: ((context, index) {
-                        return MovementCard(
-                          color: index < 1
-                              ? Palette.purple
-                              : Color.fromARGB(255, 155, 146, 238),
-                          title: "Ingresos",
-                          value: "-\$500.000",
-                          time: "2 meses",
+                        return CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) => const AlertDialog(
+                                    title: Text("Descripcion :)")));
+                          },
+                          child: MovementCard(
+                            color: index < 1
+                                ? Palette.purple
+                                : const Color.fromARGB(255, 155, 146, 238),
+                            title: "Ingresos",
+                            value: "-\$500.000",
+                            time: "2 meses",
+                          ),
                         );
                       })),
                   Positioned(
