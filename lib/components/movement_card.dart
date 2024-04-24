@@ -44,7 +44,7 @@ class _MovementCardState extends State<MovementCard> {
               Row(
                 children: [
                   Text(
-                    "Último gasto hace ${widget.time}",
+                    "Hace ${widget.time}",
                     style: const TextStyle(
                         color: Colors.white,
                         fontFamily: 'Poppins',
