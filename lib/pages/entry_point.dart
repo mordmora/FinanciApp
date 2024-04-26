@@ -42,7 +42,6 @@ class _EntryPointState extends State<EntryPoint> {
 
   @override
   Widget build(BuildContext context) {
-    print(_isLogged);
     return _isLogged ? const HomePage() : const LoginPage();
   }
 }

@@ -88,7 +88,6 @@ class _CompleteProfileState extends State<CompleteProfile> {
 
         final Uri url =
             Uri.parse("http://financiapp.pythonanywhere.com/register");
-        print("hop 1");
         var response = await http.post(url,
             headers: <String, String>{
               'Content-Type': 'application/json',
@@ -119,7 +118,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
         ));
         setState(() {});
         return retorna;
-      } on SocketException catch (e) {
+      } on SocketException {
         setState(() {});
         return false;
       }
@@ -251,7 +250,6 @@ class _CompleteProfileState extends State<CompleteProfile> {
                           values[1] = false;
                           terms = "15";
                           setState(() {});
-                          print(terms);
                         },
                       ),
                       const Text("15 dias",
@@ -267,7 +265,6 @@ class _CompleteProfileState extends State<CompleteProfile> {
                           values[1] = !values[1];
                           terms = "30";
                           setState(() {});
-                          print(terms);
                         },
                       ),
                       const Text(
@@ -293,12 +290,10 @@ class _CompleteProfileState extends State<CompleteProfile> {
                                     //        '/home', (route) => false);
                                     createUser().then((value) {
                                       if (value) {
-                                        print("Usuario creado");
                                         Navigator.of(context)
                                             .pushNamedAndRemoveUntil(
                                                 '/home', (route) => false);
                                       } else {
-                                        print("Error al crear usuario");
                                       }
                                     });
                                   }

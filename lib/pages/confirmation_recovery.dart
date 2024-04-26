@@ -11,7 +11,7 @@ class ConfirmationRecovery extends StatefulWidget {
 class _ConfirmationRecoveryState extends State<ConfirmationRecovery> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Palette.bg,
     );

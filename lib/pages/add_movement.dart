@@ -23,6 +23,8 @@ class _AddMovementState extends State<AddMovement> {
   String _reason = "";
   bool budgetAlert = false;
   late NavigatorObserver observer;
+  String type = "ingreso";
+  List<bool> active = [true, false];
 
   final _reasonController = TextEditingController();
   final valueController = TextEditingController();
@@ -60,9 +62,6 @@ class _AddMovementState extends State<AddMovement> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.type);
-    //final budgetProvider = Provider.of<BudgetProvider>(context, listen: false);
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Palette.purple,
@@ -91,8 +90,8 @@ class _AddMovementState extends State<AddMovement> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Registrar ${widget.type}',
-                            style: const TextStyle(
+                        const Text('Registrar movimiento',
+                            style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 30,
                               fontWeight: FontWeight.w700,
@@ -116,7 +115,6 @@ class _AddMovementState extends State<AddMovement> {
                         ],
                         controller: valueController,
                         onChanged: (input) {
-                          print(value);
                           setState(() {
                             budgetAlert = false;
                           });
@@ -156,6 +154,41 @@ class _AddMovementState extends State<AddMovement> {
                         });
                       },
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, left: 30),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                            value: active[0],
+                            onChanged: (value) {
+                              setState(() {
+                                active[1] = false;
+                                active[0] = true;
+                                type = "ingreso";
+                              });
+                            }),
+                        const Text("Ingreso", style: TextStyle(fontSize: 20)),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                            value: active[1],
+                            onChanged: (value) {
+                              setState(() {
+                                active[0] = false;
+                                active[1] = true;
+                                type = "egreso";
+                              });
+                            }),
+                        const Text("Gasto", style: TextStyle(fontSize: 20)),
+                      ],
+                    ),
                   )
                 ]),
               )),
@@ -179,9 +212,9 @@ class _AddMovementState extends State<AddMovement> {
                   onPressed: () {
                     if (validMovement()) {
                       String typeMovement = "";
-                      if (widget.type == "ingreso") {
+                      if (type == "ingreso") {
                         typeMovement = "entry";
-                      } else if (widget.type == "egreso") {
+                      } else if (type == "egreso") {
                         typeMovement = "payment";
                       }
                       Budget budget = Budget(

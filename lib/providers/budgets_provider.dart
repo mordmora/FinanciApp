@@ -21,13 +21,9 @@ class BudgetProvider extends ChangeNotifier {
             "Authorization": "Bearer $token"
           },
           body: jsonEncode(budget.toJson()));
-      print(jsonDecode(response.body));
-      print("Estado de codigo");
-      print(response.statusCode);
 
       return [response.statusCode, jsonDecode(response.body)];
     } catch (e) {
-      print(e.toString());
       return [
         500,
         {"message": "Fallo en la conexión"}

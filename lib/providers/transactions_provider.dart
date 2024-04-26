@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class TransactionsProvider extends ChangeNotifier {
   late SharedPreferences prefs;
 
-  Future<List<Transaction>> getTransactionsNow() async {
+  Future<Set<Transaction>> getTransactionsNow() async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token') ?? "";
@@ -19,16 +19,16 @@ class TransactionsProvider extends ChangeNotifier {
       });
 
       if (response.statusCode == 200) {
-        List<Transaction> trans = [];
+        Set<Transaction> trans = {};
         for (var item in (jsonDecode(response.body)["transactions"] as List)) {
-          trans.insert(0, Transaction.fromJson(item));
+          trans.add(Transaction.fromJson(item));
         }
         return trans;
       } else {
-        return [];
+        return {};
       }
     } catch (e) {
-      return [];
+      return {};
     }
   }
 
@@ -61,13 +61,9 @@ class TransactionsProvider extends ChangeNotifier {
       });
 
       if (response.statusCode == 200) {
-        print(jsonDecode(response.body)["message"]);
-      } else {
-        print(jsonDecode(response.body)["message"]);
-      }
-    } catch (e) {
-      print(e);
-    }
+      } else {}
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   Future<String> getBudget() async {
@@ -85,11 +81,47 @@ class TransactionsProvider extends ChangeNotifier {
         String budget = jsonDecode(response.body)["budget"].toString();
         return "\$$budget";
       } else {
-        print(jsonDecode(response.body)["message"]);
         return "\$0.00";
       }
     } catch (e) {
       return "Error al obtener los datos";
+    }
+  }
+
+  Future<Map<String, dynamic>> getGraphicData() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ?? "";
+      Uri url = Uri.parse(
+        'http://financiapp.pythonanywhere.com/users/getGraphicData',
+      );
+
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        List<double> gastos = jsonResponse['gastos'].cast<double>();
+        List<double> ingresos = jsonResponse['ingresos'].cast<double>();
+        List<String> labels = jsonResponse['labels'].cast<String>();
+        double maxG = jsonResponse['max_g'];
+        double maxI = jsonResponse['max_i'];
+        return {
+          'gastos': gastos,
+          'ingresos': ingresos,
+          'labels': labels,
+          'maxG': maxG,
+          'maxI': maxI,
+        };
+      } else {
+        return {};
+      }
+    } catch (e) {
+      return {};
     }
   }
 }

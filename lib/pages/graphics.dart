@@ -1,6 +1,10 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'package:finanzas/configurations/color_palette.dart';
+import 'package:finanzas/providers/transactions_provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Graphics extends StatefulWidget {
   const Graphics({super.key});
@@ -15,6 +19,12 @@ class _GraphicsState extends State<Graphics> {
   double pageClamp = 0;
   int activeIndex = 0;
 
+  List<String> labels = [];
+  List<double> gastos = [];
+  List<double> ingresos = [];
+  double maxG = 0;
+  double maxI = 0;
+
   void _pageListener() {
     setState(() {
       pageClamp = _pController.page!;
@@ -28,15 +38,28 @@ class _GraphicsState extends State<Graphics> {
     super.dispose();
   }
 
+  bool isLoading = true;
+
   @override
   void initState() {
     _pController.addListener(_pageListener);
     super.initState();
+
+    Provider.of<TransactionsProvider>(context, listen: false)
+        .getGraphicData()
+        .then((value) {
+      labels = value['labels'];
+      gastos = value['gastos'];
+      ingresos = value['ingresos'];
+    }).whenComplete(() {
+      isLoading = false;
+      setState(() {});
+    }).catchError((error) {});
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> titles = ["Ingresos", "Gastos"];
+    List<String> titles = ["Gastos", "Ingresos"];
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 113, 105, 189),
@@ -52,12 +75,19 @@ class _GraphicsState extends State<Graphics> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
               children: [
-                const Text("Mi historial",
+                const Text("Alimentación",
                     style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 40,
                         fontWeight: FontWeight.w600,
                         color: Colors.white)),
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      color: Colors.white,
+                      size: 35,
+                    ))
               ],
             ),
           ),
@@ -114,6 +144,10 @@ class _GraphicsState extends State<Graphics> {
 }
 
 class Titles {
+  final List<String> weeks;
+  final List<double> values;
+  const Titles({required this.weeks, required this.values});
+
   static const TextStyle style = TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.bold,
@@ -169,7 +203,14 @@ class Titles {
 }
 
 class LineChartWidget extends StatefulWidget {
-  const LineChartWidget({super.key});
+  final List<double> values;
+  final List<String> labels;
+  final Color color;
+  const LineChartWidget(
+      {super.key,
+      required this.values,
+      required this.labels,
+      required this.color});
 
   @override
   State<LineChartWidget> createState() => _LineChartWidgetState();
@@ -177,26 +218,91 @@ class LineChartWidget extends StatefulWidget {
 
 class _LineChartWidgetState extends State<LineChartWidget> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  double maxValue() {
+    return widget.values
+        .reduce((max, element) => max > element ? max : element);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final gradient = LinearGradient(colors: [
-      Palette.green.withOpacity(0.3),
-      Palette.green.withOpacity(0.5),
+      widget.color.withOpacity(0.3),
+      widget.color.withOpacity(0.5),
     ], begin: Alignment.topCenter, end: Alignment.bottomCenter);
-
     return LineChart(LineChartData(
-      titlesData: Titles.getTitleData(),
+      titlesData: FlTitlesData(
+          show: true,
+          topTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+            interval: 1,
+            getTitlesWidget: (value, meta) {
+              int index = value.toInt();
+              // ignore: unnecessary_null_comparison
+              if (widget.labels != null &&
+                  widget.labels.isNotEmpty &&
+                  index >= 0 &&
+                  index <= widget.labels.length) {
+                return Text(widget.labels[index], style: Titles.style);
+              }
+              return const Text('');
+            },
+            showTitles: true,
+          )),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              interval: 50000,
+              getTitlesWidget: (value, meta) {
+                maxValue().toInt();
+                switch (value.toInt()) {
+                  case 50000:
+                    return const Text('50k', style: Titles.style);
+                  case 100000:
+                    return const Text('100k', style: Titles.style);
+                  case 150000:
+                    return const Text('150k', style: Titles.style);
+                  case 200000:
+                    return const Text('200k', style: Titles.style);
+                  case 250000:
+                    return const Text('250k', style: Titles.style);
+                  case 300000:
+                    return const Text('300k', style: Titles.style);
+                  case 350000:
+                    return const Text('350k', style: Titles.style);
+                  case 400000:
+                    return const Text('400k', style: Titles.style);
+                  case 450000:
+                    return const Text('450k', style: Titles.style);
+                  case 500000:
+                    return const Text('500k', style: Titles.style);
+                  case 550000:
+                    return const Text('550k', style: Titles.style);
+                  default:
+                    return const Text('');
+                }
+              },
+              showTitles: true,
+            ),
+          )),
       minX: 0,
       maxX: 4,
       minY: 0,
-      maxY: 20000,
+      maxY: maxValue() * 1.1,
       gridData: FlGridData(
           show: true,
           getDrawingVerticalLine: (value) {
             return const FlLine(color: Colors.transparent);
           },
           getDrawingHorizontalLine: (value) {
-            return const FlLine(
-              color: Palette.green,
+            return FlLine(
+              color: widget.color,
               strokeWidth: 0,
             );
           }),
@@ -209,19 +315,15 @@ class _LineChartWidgetState extends State<LineChartWidget> {
         LineChartBarData(
           preventCurveOverShooting: true,
           show: true,
-          spots: const [
-            FlSpot(0, 5000),
-            FlSpot(1, 10000),
-            FlSpot(2, 15000),
-            FlSpot(3, 20000),
-            FlSpot(4, 15000),
-          ],
+          spots: widget.values.asMap().entries.map((e) {
+            return FlSpot(e.key.toDouble(), e.value);
+          }).toList(),
           isCurved: true,
-          color: const Color(0xFF39D2C0),
+          color: widget.color,
           barWidth: 10,
           dotData: FlDotData(
             getDotPainter: (p0, p1, p2, p3) {
-              return FlDotCirclePainter(radius: 7, color: Palette.green);
+              return FlDotCirclePainter(radius: 7, color: widget.color);
             },
             show: true,
           ),

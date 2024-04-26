@@ -6,7 +6,6 @@ import 'package:finanzas/notifications/notifications_controller.dart';
 
 import 'package:finanzas/providers/auth_provider.dart';
 import 'package:finanzas/providers/transactions_provider.dart';
-import 'package:finanzas/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -46,24 +45,17 @@ class _HomePageState extends State<HomePage> with RouteAware {
 
   @override
   void initState() {
-    AwesomeNotifications().setListeners(
-        onActionReceivedMethod: NotificationsController.onActionReceivedMethod,
-        onNotificationCreatedMethod:
-            NotificationsController.onNotificationCreatedMethod,
-        onDismissActionReceivedMethod:
-            NotificationsController.onDismissActionReceivedMethod);
-
+    print("init");
     Provider.of<AuthProvider>(context, listen: false)
         .getUserData()
         .then((value) {
-      print(value);
       getSharedPreferences();
     }).whenComplete(() {
       setState(() {
         _isLoading = false;
       });
     });
-
+    transactionList.clear();
     getTransactions();
 
     super.initState();
@@ -83,7 +75,6 @@ class _HomePageState extends State<HomePage> with RouteAware {
         .getTransactionsNow()
         .then((value) {
       for (var element in value) {
-        print(element.id);
         transactionList.add(TransactionComponent(
             id: element.id,
             button: IconButton(
@@ -113,16 +104,12 @@ class _HomePageState extends State<HomePage> with RouteAware {
   }
 
   @override
-  void didPop() {
-    print("did pop");
-    getTransactions();
-    super.didPop();
-  }
-
-  @override
   void didPush() {
-    print("did pushhhhhhhhhhhhhhhhh");
+    transactionList.clear();
+
     getTransactions();
+
+    setState(() {});
     super.didPush();
   }
 
@@ -359,8 +346,8 @@ class _HomePageState extends State<HomePage> with RouteAware {
                                             itemCount: transactionList.length,
                                             itemBuilder: (contex, index) {
                                               return Padding(
-                                                padding:
-                                                    EdgeInsets.only(bottom: 10),
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 10),
                                                 child: transactionList[index],
                                               );
                                             },
@@ -378,7 +365,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                         child: CupertinoButton(
                           color: Colors.transparent,
                           onPressed: () {
-                            showModalSheet(context);
+                            Navigator.pushNamed(context, '/addMovement');
                           },
                           child: Container(
                               alignment: Alignment.center,

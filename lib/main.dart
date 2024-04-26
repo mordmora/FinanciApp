@@ -1,4 +1,3 @@
-import 'package:finanzas/configurations/nav_observer.dart';
 import 'package:finanzas/configurations/route_generator.dart';
 import 'package:finanzas/providers/auth_provider.dart';
 import 'package:finanzas/providers/budgets_provider.dart';
@@ -45,7 +44,7 @@ class MyApp extends StatelessWidget {
       builder: (context, _) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.linear(1),
+            textScaler: const TextScaler.linear(1),
             devicePixelRatio: 1,
           ),
           child: Theme(

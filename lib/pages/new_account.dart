@@ -4,6 +4,7 @@ import 'package:finanzas/providers/register_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// ignore: unnecessary_import
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +41,7 @@ class _NewAccountState extends State<NewAccount> {
     super.initState();
   }
 
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
