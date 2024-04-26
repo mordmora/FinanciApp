@@ -18,15 +18,16 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with RouteAware {
   String name = "";
   String budget = "";
   String term = "";
   bool _isLoading = true;
   LoggedUser? user;
   late SharedPreferences prefs;
+  late NavigatorObserver observer;
 
-  List<Widget> transactionList = [];
+  List<TransactionComponent> transactionList = [];
 
   readFromSharedPrefs() async {
     setState(() {
@@ -43,9 +44,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    print("init");
     Provider.of<AuthProvider>(context, listen: false)
         .getUserData()
         .then((value) {
+      print(value);
       getSharedPreferences();
     }).whenComplete(() {
       setState(() {
@@ -58,12 +61,31 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  void deleteTransaction(String id) async {
+    Provider.of<TransactionsProvider>(context, listen: false)
+        .deleteTransaction(id)
+        .then((value) {
+      transactionList.clear();
+      getTransactions();
+    });
+  }
+
   void getTransactions() async {
     Provider.of<TransactionsProvider>(context, listen: false)
         .getTransactionsNow()
         .then((value) {
       for (var element in value) {
+        print(element.id);
         transactionList.add(TransactionComponent(
+            id: element.id,
+            button: IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                deleteTransaction(element.id);
+
+                setState(() {});
+              },
+            ),
             name: element.name,
             type: (element.entry == true) ? "Ingreso" : "Gasto",
             value: element.amount));
@@ -73,6 +95,27 @@ class _HomePageState extends State<HomePage> {
         _isLoading = false;
       });
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    RouteObserver<PageRoute>()
+        .subscribe(this, ModalRoute.of(context) as PageRoute);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didPop() {
+    print("did pop");
+    getTransactions();
+    super.didPop();
+  }
+
+  @override
+  void didPush() {
+    print("did pushhhhhhhhhhhhhhhhh");
+    getTransactions();
+    super.didPush();
   }
 
   @override
@@ -139,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
-                                          0.65,
+                                          0.6,
                                       child: const Text(
                                         "Sus últimas actualizaciones están a continuación.",
                                         maxLines: 4,
@@ -149,7 +192,11 @@ class _HomePageState extends State<HomePage> {
                                             letterSpacing: -0.6),
                                       ),
                                     ),
-                                  ])
+                                  ]),
+                              IconButton(
+                                  iconSize: 40,
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.settings))
                             ])),
                         const SizedBox(height: 20),
                         Column(

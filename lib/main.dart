@@ -1,3 +1,4 @@
+import 'package:finanzas/configurations/nav_observer.dart';
 import 'package:finanzas/configurations/route_generator.dart';
 import 'package:finanzas/providers/auth_provider.dart';
 import 'package:finanzas/providers/budgets_provider.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
     return MultiProvider(
       builder: (context, _) {
@@ -32,6 +34,7 @@ class MyApp extends StatelessWidget {
               fontFamily: 'Poppins',
             ),
             child: MaterialApp(
+              navigatorObservers: [routeObserver],
               theme: ThemeData(brightness: Brightness.light),
               title: 'Flutter Demo',
               initialRoute: '/',

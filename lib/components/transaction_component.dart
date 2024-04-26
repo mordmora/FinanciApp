@@ -6,9 +6,18 @@ import 'package:finanzas/components/movement_card.dart';
 class TransactionComponent extends StatefulWidget {
   final String name;
   final String type;
+  final String id;
   final double value;
+  final Widget button;
   const TransactionComponent(
-      {super.key, required this.name, required this.type, required this.value});
+      {super.key,
+      required this.name,
+      required this.type,
+      required this.value,
+      required this.id,
+      required this.button});
+
+  
 
   @override
   State<TransactionComponent> createState() => _TransactionComponentState();
@@ -64,13 +73,18 @@ class _TransactionComponentState extends State<TransactionComponent> {
             ]),
           ],
         ),
-        Text(widget.value.toString(),
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Palette.purple,
-            ))
+        Row(
+          children: [
+            Text(widget.value.toString(),
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Palette.purple,
+                )),
+            widget.button
+          ],
+        ),
       ]),
     );
   }

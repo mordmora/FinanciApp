@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 class AddMovement extends StatefulWidget {
   final String type;
+
   const AddMovement({super.key, required this.type});
 
   @override
@@ -21,6 +22,7 @@ class _AddMovementState extends State<AddMovement> {
   String _motive = "";
   String _reason = "";
   bool budgetAlert = false;
+  late NavigatorObserver observer;
 
   final _reasonController = TextEditingController();
   final valueController = TextEditingController();

@@ -32,6 +32,27 @@ class TransactionsProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> deleteTransaction(String id) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ?? "";
+      Uri url = Uri.parse(
+          'http://financiapp.pythonanywhere.com/users/deleteTransaction/$id');
+      final response = await http.get(url, headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      });
+
+      if (response.statusCode == 200) {
+        print(jsonDecode(response.body)["message"]);
+      } else {
+        print(jsonDecode(response.body)["message"]);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<String> getBudget() async {
     try {
       prefs = await SharedPreferences.getInstance();
