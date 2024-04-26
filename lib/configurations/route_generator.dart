@@ -1,6 +1,7 @@
 // ignore: file_names
 import 'package:finanzas/pages/add_movement.dart';
 import 'package:finanzas/pages/complete_profile.dart';
+import 'package:finanzas/pages/configuration_page.dart';
 import 'package:finanzas/pages/confirmation_recovery.dart';
 import 'package:finanzas/pages/forgot_password.dart';
 import 'package:finanzas/pages/graphics.dart';
@@ -37,6 +38,8 @@ class RouteGenerator {
                 AddMovement(type: settings.arguments.toString()));
       case '/myBudgets':
         return MaterialPageRoute(builder: (context) => const Mybudgets());
+      case '/settings':
+        return MaterialPageRoute(builder: (context) => const SettingsPage());
       case '/graphics':
         return MaterialPageRoute(builder: (context) => const Graphics());
       default:

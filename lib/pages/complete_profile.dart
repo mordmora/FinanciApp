@@ -70,7 +70,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
 
   @override
   Widget build(BuildContext context) {
-    Future<bool> _createUser() async {
+    Future<bool> createUser() async {
       try {
         user = Provider.of<RegisterProvider>(context, listen: false)
             .createAccount(_name, _age, _budgets);
@@ -102,10 +102,12 @@ class _CompleteProfileState extends State<CompleteProfile> {
           retorna = true;
           message = "Usuario creado correctamente";
           prefs.setString('token', jsonDecode(response.body)["token"]);
+          prefs.setBool('isLogged', true);
         } else {
           message = jsonDecode(response.body)["message"];
         }
 
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(message,
               style: const TextStyle(
@@ -289,7 +291,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
                                     //Navigator.of(context)
                                     //    .pushNamedAndRemoveUntil(
                                     //        '/home', (route) => false);
-                                    _createUser().then((value) {
+                                    createUser().then((value) {
                                       if (value) {
                                         print("Usuario creado");
                                         Navigator.of(context)

@@ -26,6 +26,9 @@ class AuthProvider extends ChangeNotifier {
         if (response.body.contains("token")) {}
         String token = jsonDecode(response.body)["token"];
         prefs.setString("token", token);
+        prefs.setBool("isLogged", true);
+        prefs.setString("email", email);
+        prefs.setString("password", password);
         return token;
       } else {
         String error = jsonDecode(response.body)["message"];

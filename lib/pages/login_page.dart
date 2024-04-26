@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:finanzas/components/action_button.dart';
 import 'package:finanzas/components/input_field.dart';
 import 'package:finanzas/components/password_input_field.dart';
@@ -7,7 +5,6 @@ import 'package:finanzas/configurations/color_palette.dart';
 import 'package:finanzas/providers/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,33 +46,8 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  Future<String> loginUser(String email, String password) async {
-    Uri url = Uri.parse('http://financiapp.pythonanywhere.com/login');
-    try {
-      Map<String, String> data = {
-        'email': email,
-        'password': password,
-      };
-
-      var response = await http.post(url,
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(data));
-      if (response.statusCode == 200) {
-        String token = jsonDecode(response.body)["token"];
-        return token;
-      } else {
-        String error = jsonDecode(response.body)["message"];
-        return error;
-      }
-    } catch (e) {
-      print(e);
-      return 'error';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size.height);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

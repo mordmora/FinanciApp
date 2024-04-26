@@ -1,3 +1,4 @@
+import 'package:finanzas/pages/home_page.dart';
 import 'package:finanzas/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,16 +12,17 @@ class EntryPoint extends StatefulWidget {
 
 class _EntryPointState extends State<EntryPoint> {
   late SharedPreferences prefs;
-  bool _isLogged = true;
+  bool _isLogged = false;
 
   readSharedPrefs() {
     setState(() {
-      _isLogged = prefs.getBool('isLogged') ?? true;
+      _isLogged = prefs.getBool('isLogged') ?? false;
     });
   }
 
   getSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
+    readSharedPrefs();
   }
 
   saveSharedPrefs() {
@@ -29,6 +31,7 @@ class _EntryPointState extends State<EntryPoint> {
 
   @override
   void initState() {
+    getSharedPrefs();
     super.initState();
   }
 
@@ -39,6 +42,7 @@ class _EntryPointState extends State<EntryPoint> {
 
   @override
   Widget build(BuildContext context) {
-    return const LoginPage();
+    print(_isLogged);
+    return _isLogged ? const HomePage() : const LoginPage();
   }
 }

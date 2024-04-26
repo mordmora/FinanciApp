@@ -195,7 +195,9 @@ class _HomePageState extends State<HomePage> with RouteAware {
                                   ]),
                               IconButton(
                                   iconSize: 40,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/settings');
+                                  },
                                   icon: const Icon(Icons.settings))
                             ])),
                         const SizedBox(height: 20),
