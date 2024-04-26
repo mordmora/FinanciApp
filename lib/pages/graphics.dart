@@ -52,19 +52,12 @@ class _GraphicsState extends State<Graphics> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
               children: [
-                const Text("Alimentación",
+                const Text("Mi historial",
                     style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 40,
                         fontWeight: FontWeight.w600,
                         color: Colors.white)),
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.delete_outline,
-                      color: Colors.white,
-                      size: 35,
-                    ))
               ],
             ),
           ),

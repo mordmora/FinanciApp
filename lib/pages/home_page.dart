@@ -1,6 +1,8 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:finanzas/components/transaction_component.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:finanzas/models/logged_user.dart';
+import 'package:finanzas/notifications/notifications_controller.dart';
 
 import 'package:finanzas/providers/auth_provider.dart';
 import 'package:finanzas/providers/transactions_provider.dart';
@@ -44,7 +46,13 @@ class _HomePageState extends State<HomePage> with RouteAware {
 
   @override
   void initState() {
-    print("init");
+    AwesomeNotifications().setListeners(
+        onActionReceivedMethod: NotificationsController.onActionReceivedMethod,
+        onNotificationCreatedMethod:
+            NotificationsController.onNotificationCreatedMethod,
+        onDismissActionReceivedMethod:
+            NotificationsController.onDismissActionReceivedMethod);
+
     Provider.of<AuthProvider>(context, listen: false)
         .getUserData()
         .then((value) {

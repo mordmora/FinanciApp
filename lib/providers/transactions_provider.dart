@@ -32,6 +32,23 @@ class TransactionsProvider extends ChangeNotifier {
     }
   }
 
+  Future<http.Response> getDataGraphic() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ?? "";
+      Uri url = Uri.parse(
+          'http://financiapp.pythonanywhere.com/users/getGraphicData');
+      final response = await http.get(url, headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      });
+
+      return response;
+    } catch (e) {
+      return http.Response("Fallo", 400);
+    }
+  }
+
   Future<void> deleteTransaction(String id) async {
     try {
       prefs = await SharedPreferences.getInstance();

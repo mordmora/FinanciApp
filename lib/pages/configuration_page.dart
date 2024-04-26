@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,14 @@ class _SettingsPageState extends State<SettingsPage> {
             child: CupertinoButton(
               color: Palette.purple,
               onPressed: () {
+                AwesomeNotifications().createNotification(
+                  content: NotificationContent(
+                      id: 1,
+                      channelKey: "basic_channel",
+                      title: "¡Recordatorio!",
+                      body:
+                          "No se te olvide registrar tus movimientos financieros, así podrás llevar mejor los registros de tu dinero"),
+                );
                 deletePrefs();
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/login', (route) => false);
