@@ -17,8 +17,6 @@ class TransactionComponent extends StatefulWidget {
       required this.id,
       required this.button});
 
-  
-
   @override
   State<TransactionComponent> createState() => _TransactionComponentState();
 }
@@ -61,7 +59,10 @@ class _TransactionComponentState extends State<TransactionComponent> {
                 )),
             const SizedBox(width: 20),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(widget.name,
+              Text(
+                  (widget.name.length > 9)
+                      ? widget.name.substring(0, 9)
+                      : widget.name,
                   style: const TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 20,
