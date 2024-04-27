@@ -37,6 +37,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.finanzas"
+    minSdkVersion 21
     compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
