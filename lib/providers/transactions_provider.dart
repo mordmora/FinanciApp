@@ -1,4 +1,5 @@
 import "dart:convert";
+import 'dart:ffi';
 import 'package:finanzas/models/transactions.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -73,6 +74,44 @@ class TransactionsProvider extends ChangeNotifier {
       }
     } catch (e) {
       return "Error al obtener los datos";
+    }
+  }
+
+  Future<Map<String, dynamic>> getGraphicData() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ?? "";
+      Uri url = Uri.parse(
+        'http://financiapp.pythonanywhere.com/users/getGraphicData',
+      );
+      print('wtf');
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        List<double> gastos = jsonResponse['gastos'].cast<double>();
+        List<double> ingresos = jsonResponse['ingresos'].cast<double>();
+        List<String> labels = jsonResponse['labels'].cast<String>();
+        double maxG = jsonResponse['max_g'];
+        double maxI = jsonResponse['max_i'];
+        return {
+          'gastos': gastos,
+          'ingresos': ingresos,
+          'labels': labels,
+          'maxG': maxG,
+          'maxI': maxI,
+        };
+      } else {
+        return {};
+      }
+    } catch (e) {
+      print(e);
+      return {};
     }
   }
 }

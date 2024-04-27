@@ -1,6 +1,11 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'package:finanzas/configurations/color_palette.dart';
+import 'package:finanzas/providers/transactions_provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class Graphics extends StatefulWidget {
   const Graphics({super.key});
@@ -15,6 +20,12 @@ class _GraphicsState extends State<Graphics> {
   double pageClamp = 0;
   int activeIndex = 0;
 
+  List<String> labels = [];
+  List<double> gastos = [];
+  List<double> ingresos = [];
+  double maxG = 0;
+  double maxI = 0;
+
   void _pageListener() {
     setState(() {
       pageClamp = _pController.page!;
@@ -28,99 +39,128 @@ class _GraphicsState extends State<Graphics> {
     super.dispose();
   }
 
+  bool isLoading = true;
+
   @override
   void initState() {
     _pController.addListener(_pageListener);
     super.initState();
+
+    Provider.of<TransactionsProvider>(context, listen: false)
+        .getGraphicData()
+        .then((value) {
+      labels = value['labels'];
+      gastos = value['gastos'];
+      ingresos = value['ingresos'];
+    }).whenComplete(() {
+      isLoading = false;
+      setState(() {});
+    }).catchError((error) {
+      print("Error: $error");
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> titles = ["Ingresos", "Gastos"];
+    List<String> titles = ["Gastos", "Ingresos"];
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 113, 105, 189),
       body: SafeArea(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                const Text("Alimentación",
-                    style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 40,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white)),
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.delete_outline,
-                      color: Colors.white,
-                      size: 35,
-                    ))
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 40),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: Text(
-                titles[activeIndex],
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-                key: ValueKey(activeIndex),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 600,
-            width: MediaQuery.of(context).size.width,
-            child: PageView(
-              padEnds: true,
-              onPageChanged: (value) {
-                activeIndex = value;
-                setState(() {});
-              },
-              scrollDirection: Axis.horizontal,
-              controller: _pController,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 40, horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          const Text("Alimentación",
+                              style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white)),
+                          IconButton(
+                              onPressed: () {},
+                              icon: const Icon(
+                                Icons.delete_outline,
+                                color: Colors.white,
+                                size: 35,
+                              ))
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 40),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: Text(
+                          titles[activeIndex],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                          key: ValueKey(activeIndex),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 600,
                       width: MediaQuery.of(context).size.width,
-                      height: 350,
-                      child: const LineChartWidget()),
-                ),
-                Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 350,
-                      child: const LineChartWidget(),
-                    ))
-              ],
-            ),
-          ),
-          const Spacer()
-        ],
-      )),
+                      child: PageView(
+                        padEnds: true,
+                        onPageChanged: (value) {
+                          activeIndex = value;
+                          setState(() {});
+                        },
+                        scrollDirection: Axis.horizontal,
+                        controller: _pController,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: 350,
+                                child: LineChartWidget(
+                                  color: Palette.green,
+                                  labels: labels,
+                                  values: ingresos,
+                                )),
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: 350,
+                                child: LineChartWidget(
+                                    color: Palette.red,
+                                    labels: labels,
+                                    values: gastos),
+                              ))
+                        ],
+                      ),
+                    ),
+                    const Spacer()
+                  ],
+                )),
     );
   }
 }
 
 class Titles {
+  final List<String> weeks;
+  final List<double> values;
+  const Titles({required this.weeks, required this.values});
+
   static const TextStyle style = TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.bold,
@@ -176,7 +216,14 @@ class Titles {
 }
 
 class LineChartWidget extends StatefulWidget {
-  const LineChartWidget({super.key});
+  final List<double> values;
+  final List<String> labels;
+  final Color color;
+  const LineChartWidget(
+      {super.key,
+      required this.values,
+      required this.labels,
+      required this.color});
 
   @override
   State<LineChartWidget> createState() => _LineChartWidgetState();
@@ -184,26 +231,79 @@ class LineChartWidget extends StatefulWidget {
 
 class _LineChartWidgetState extends State<LineChartWidget> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  double maxValue() {
+    return widget.values
+        .reduce((max, element) => max > element ? max : element);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final gradient = LinearGradient(colors: [
-      Palette.green.withOpacity(0.3),
-      Palette.green.withOpacity(0.5),
+      widget.color.withOpacity(0.3),
+      widget.color.withOpacity(0.5),
     ], begin: Alignment.topCenter, end: Alignment.bottomCenter);
-
     return LineChart(LineChartData(
-      titlesData: Titles.getTitleData(),
+      titlesData: FlTitlesData(
+          show: true,
+          topTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+            interval: 1,
+            getTitlesWidget: (value, meta) {
+              int index = value.toInt();
+              print("bottom $index");
+              // ignore: unnecessary_null_comparison
+              if (widget.labels != null &&
+                  widget.labels.isNotEmpty &&
+                  index >= 0 &&
+                  index <= widget.labels.length) {
+                return Text(widget.labels[index], style: Titles.style);
+              }
+              return const Text('');
+            },
+            showTitles: true,
+          )),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              interval: 5000,
+              getTitlesWidget: (value, meta) {
+                //print(maxValue());
+
+                int index = value.toInt();
+                //print('index: $index');
+                //print("max: " + maxValue().toString());
+                if (widget.values != null &&
+                    widget.values.isNotEmpty &&
+                    index >= 0 &&
+                    index <= widget.values.length) {
+                  print(index);
+                  return Text(widget.values[index].toString(),
+                      style: Titles.style);
+                }
+                return const Text('');
+              },
+              showTitles: true,
+            ),
+          )),
       minX: 0,
       maxX: 4,
       minY: 0,
-      maxY: 20000,
+      maxY: maxValue(),
       gridData: FlGridData(
           show: true,
           getDrawingVerticalLine: (value) {
             return const FlLine(color: Colors.transparent);
           },
           getDrawingHorizontalLine: (value) {
-            return const FlLine(
-              color: Palette.green,
+            return FlLine(
+              color: widget.color,
               strokeWidth: 0,
             );
           }),
@@ -216,19 +316,15 @@ class _LineChartWidgetState extends State<LineChartWidget> {
         LineChartBarData(
           preventCurveOverShooting: true,
           show: true,
-          spots: const [
-            FlSpot(0, 5000),
-            FlSpot(1, 10000),
-            FlSpot(2, 15000),
-            FlSpot(3, 20000),
-            FlSpot(4, 15000),
-          ],
+          spots: widget.values.asMap().entries.map((e) {
+            return FlSpot(e.key.toDouble(), e.value);
+          }).toList(),
           isCurved: true,
-          color: const Color(0xFF39D2C0),
+          color: widget.color,
           barWidth: 10,
           dotData: FlDotData(
             getDotPainter: (p0, p1, p2, p3) {
-              return FlDotCirclePainter(radius: 7, color: Palette.green);
+              return FlDotCirclePainter(radius: 7, color: widget.color);
             },
             show: true,
           ),

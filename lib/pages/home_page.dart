@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
         _isLoading = false;
       });
     });
-
+    transactionList.clear();
     getTransactions();
 
     super.initState();
@@ -75,7 +75,6 @@ class _HomePageState extends State<HomePage> with RouteAware {
         .getTransactionsNow()
         .then((value) {
       for (var element in value) {
-        print(element.id);
         transactionList.add(TransactionComponent(
             id: element.id,
             button: IconButton(
@@ -105,16 +104,13 @@ class _HomePageState extends State<HomePage> with RouteAware {
   }
 
   @override
-  void didPop() {
-    print("did pop");
-    getTransactions();
-    super.didPop();
-  }
-
-  @override
   void didPush() {
     print("did pushhhhhhhhhhhhhhhhh");
+    transactionList.clear();
+
     getTransactions();
+
+    setState(() {});
     super.didPush();
   }
 
