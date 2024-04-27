@@ -6,31 +6,14 @@ import 'package:finanzas/providers/transactions_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 
-void main() async {
-  await AwesomeNotifications().initialize(null, [
-    NotificationChannel(
-      channelGroupKey: "basic_group",
-      channelKey: "basic_channel",
-      channelName: "bacis notifications",
-      channelDescription: "test notifications channel",
-    )
-  ], channelGroups: [
-    NotificationChannelGroup(
-        channelGroupKey: "basic_group", channelGroupName: "group_1")
-  ]);
-
-  bool isAllowedToSendNotifications =
-      await AwesomeNotifications().isNotificationAllowed();
-
-  if (!isAllowedToSendNotifications) {
-    AwesomeNotifications().requestPermissionToSendNotifications();
-  }
+void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+
+
   const MyApp({super.key});
 
   // This widget is the root of your application.
