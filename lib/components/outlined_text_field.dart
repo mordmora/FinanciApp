@@ -23,13 +23,13 @@ class _OutlinedTextFieldState extends State<OutlinedTextField> {
     return TextField(
         textAlign: TextAlign.center,
         style:
-            TextStyle(color: Colors.black, fontSize: 40, fontFamily: 'Poppins'),
+            const TextStyle(color: Colors.black, fontSize: 40, fontFamily: 'Poppins'),
         controller: widget.controller,
         keyboardType: TextInputType.number,
         inputFormatters: widget.inputFormatters,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
             prefixIcon: const Icon(
               Icons.attach_money_outlined,
               color: Colors.black,

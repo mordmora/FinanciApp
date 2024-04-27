@@ -28,7 +28,9 @@ class _CustomInputFieldState extends State<CustomPasswordInputField> {
     super.initState();
   }
 
+  @override
   void dispose() {
+    passwordController.dispose();
     super.dispose();
   }
 

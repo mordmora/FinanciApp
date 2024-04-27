@@ -4,7 +4,6 @@ import 'package:finanzas/configurations/color_palette.dart';
 import 'package:finanzas/providers/transactions_provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class Graphics extends StatefulWidget {
@@ -56,7 +55,6 @@ class _GraphicsState extends State<Graphics> {
       isLoading = false;
       setState(() {});
     }).catchError((error) {
-      print("Error: $error");
     });
   }
 
@@ -126,7 +124,7 @@ class _GraphicsState extends State<Graphics> {
                         controller: _pController,
                         children: [
                           Padding(
-                            padding: EdgeInsets.all(20.0),
+                            padding: const EdgeInsets.all(20.0),
                             child: SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 height: 350,
@@ -258,7 +256,6 @@ class _LineChartWidgetState extends State<LineChartWidget> {
             interval: 1,
             getTitlesWidget: (value, meta) {
               int index = value.toInt();
-              print("bottom $index");
               // ignore: unnecessary_null_comparison
               if (widget.labels != null &&
                   widget.labels.isNotEmpty &&
@@ -274,8 +271,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
             sideTitles: SideTitles(
               interval: 50000,
               getTitlesWidget: (value, meta) {
-                int max = maxValue().toInt();
-                print("left $value");
+                maxValue().toInt();
                 switch (value.toInt()) {
                   case 50000:
                     return const Text('50k', style: Titles.style);

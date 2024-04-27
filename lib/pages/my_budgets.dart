@@ -1,8 +1,6 @@
-import 'package:finanzas/components/movement_card.dart';
 import 'package:finanzas/components/transaction_component.dart';
 import 'package:finanzas/configurations/color_palette.dart';
 import 'package:finanzas/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,10 +13,29 @@ class Mybudgets extends StatefulWidget {
   State<Mybudgets> createState() => _MybudgetsState();
 }
 
-class _MybudgetsState extends State<Mybudgets> {
+class _MybudgetsState extends State<Mybudgets> with RouteAware {
   late SharedPreferences prefs;
   String budgetText = "";
   List<Widget> transactionList = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    RouteObserver<PageRoute>()
+        .subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void dispose() {
+    RouteObserver<PageRoute>().unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPush() {
+    setState(() {});
+    super.didPush();
+  }
 
   @override
   void initState() {
@@ -97,9 +114,9 @@ class _MybudgetsState extends State<Mybudgets> {
                         style: TextStyle(
                             fontSize: 40,
                             color:
-                                (budgetText.length > 0 && budgetText[1] == "-")
-                                    ? Color.fromARGB(255, 255, 101, 101)
-                                    : Color.fromARGB(255, 117, 101, 255),
+                                (budgetText.isNotEmpty && budgetText[1] == "-")
+                                    ? const Color.fromARGB(255, 255, 101, 101)
+                                    : const Color.fromARGB(255, 117, 101, 255),
                             fontFamily: 'Poppins',
                             letterSpacing: -0.5,
                             fontWeight: FontWeight.w700),
@@ -135,7 +152,7 @@ class _MybudgetsState extends State<Mybudgets> {
                       itemCount: transactionList.length,
                       itemBuilder: ((context, index) {
                         return Padding(
-                          padding: EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: transactionList[index],
                         );
                       })),
@@ -144,7 +161,7 @@ class _MybudgetsState extends State<Mybudgets> {
                     right: 20,
                     child: FloatingActionButton(
                       onPressed: () {
-                        showModalSheet(context);
+                        Navigator.pushNamed(context, '/addMovement');
                       },
                       backgroundColor: const Color(0xFF39D2C0),
                       child: const Icon(Icons.add),

@@ -4,7 +4,6 @@ import 'package:finanzas/models/logged_user.dart';
 
 import 'package:finanzas/providers/auth_provider.dart';
 import 'package:finanzas/providers/transactions_provider.dart';
-import 'package:finanzas/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -44,11 +43,9 @@ class _HomePageState extends State<HomePage> with RouteAware {
 
   @override
   void initState() {
-    print("init");
     Provider.of<AuthProvider>(context, listen: false)
         .getUserData()
         .then((value) {
-      print(value);
       getSharedPreferences();
     }).whenComplete(() {
       setState(() {
@@ -105,7 +102,6 @@ class _HomePageState extends State<HomePage> with RouteAware {
 
   @override
   void didPush() {
-    print("did pushhhhhhhhhhhhhhhhh");
     transactionList.clear();
 
     getTransactions();
@@ -347,8 +343,8 @@ class _HomePageState extends State<HomePage> with RouteAware {
                                             itemCount: transactionList.length,
                                             itemBuilder: (contex, index) {
                                               return Padding(
-                                                padding:
-                                                    EdgeInsets.only(bottom: 10),
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 10),
                                                 child: transactionList[index],
                                               );
                                             },
@@ -366,7 +362,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                         child: CupertinoButton(
                           color: Colors.transparent,
                           onPressed: () {
-                            showModalSheet(context);
+                            Navigator.pushNamed(context, '/addMovement');
                           },
                           child: Container(
                               alignment: Alignment.center,

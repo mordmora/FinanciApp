@@ -85,13 +85,12 @@ void showModalSheet(BuildContext context) {
                           arguments: typeMovement);
                     }),
               ),
-              SizedBox(height: 10)
+              const SizedBox(height: 10)
             ]);
       });
 }
 
 String formatearAMoneda(String numero) {
-  print(numero);
   // Convertir el número a String y dividirlo en partes enteras y decimales
   List<String> partes = numero.split('.');
 
@@ -105,8 +104,6 @@ String formatearAMoneda(String numero) {
   String parteEntera = parteDos.length > 1 ? parteDos[1] : "0";
   String parteDecimal = partes.length > 1 ? partes[1] : "0";
 
-  print(parteDecimal);
-  print(parteEntera);
   // Formatear la parte entera con comas cada tres dígitos
   String parteEnteraFormateada = '';
   for (int i = 0; i < parteEntera.length; i++) {

@@ -1,5 +1,4 @@
 import "dart:convert";
-import 'dart:ffi';
 import 'package:finanzas/models/transactions.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -8,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class TransactionsProvider extends ChangeNotifier {
   late SharedPreferences prefs;
 
-  Future<List<Transaction>> getTransactionsNow() async {
+  Future<Set<Transaction>> getTransactionsNow() async {
     try {
       prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token') ?? "";
@@ -20,16 +19,16 @@ class TransactionsProvider extends ChangeNotifier {
       });
 
       if (response.statusCode == 200) {
-        List<Transaction> trans = [];
+        Set<Transaction> trans = {};
         for (var item in (jsonDecode(response.body)["transactions"] as List)) {
-          trans.insert(0, Transaction.fromJson(item));
+          trans.add(Transaction.fromJson(item));
         }
         return trans;
       } else {
-        return [];
+        return {};
       }
     } catch (e) {
-      return [];
+      return {};
     }
   }
 
@@ -45,13 +44,9 @@ class TransactionsProvider extends ChangeNotifier {
       });
 
       if (response.statusCode == 200) {
-        print(jsonDecode(response.body)["message"]);
-      } else {
-        print(jsonDecode(response.body)["message"]);
-      }
-    } catch (e) {
-      print(e);
-    }
+      } else {}
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   Future<String> getBudget() async {
@@ -69,7 +64,6 @@ class TransactionsProvider extends ChangeNotifier {
         String budget = jsonDecode(response.body)["budget"].toString();
         return "\$$budget";
       } else {
-        print(jsonDecode(response.body)["message"]);
         return "\$0.00";
       }
     } catch (e) {
@@ -84,7 +78,7 @@ class TransactionsProvider extends ChangeNotifier {
       Uri url = Uri.parse(
         'http://financiapp.pythonanywhere.com/users/getGraphicData',
       );
-      print('wtf');
+
       final response = await http.get(
         url,
         headers: {
@@ -110,7 +104,6 @@ class TransactionsProvider extends ChangeNotifier {
         return {};
       }
     } catch (e) {
-      print(e);
       return {};
     }
   }
