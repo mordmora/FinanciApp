@@ -126,7 +126,7 @@ class _GraphicsState extends State<Graphics> {
                         controller: _pController,
                         children: [
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(20.0),
                             child: SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 height: 350,
@@ -272,22 +272,36 @@ class _LineChartWidgetState extends State<LineChartWidget> {
           )),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
-              interval: 5000,
+              interval: 50000,
               getTitlesWidget: (value, meta) {
-                //print(maxValue());
-
-                int index = value.toInt();
-                //print('index: $index');
-                //print("max: " + maxValue().toString());
-                if (widget.values != null &&
-                    widget.values.isNotEmpty &&
-                    index >= 0 &&
-                    index <= widget.values.length) {
-                  print(index);
-                  return Text(widget.values[index].toString(),
-                      style: Titles.style);
+                int max = maxValue().toInt();
+                print("left $value");
+                switch (value.toInt()) {
+                  case 50000:
+                    return const Text('50k', style: Titles.style);
+                  case 100000:
+                    return const Text('100k', style: Titles.style);
+                  case 150000:
+                    return const Text('150k', style: Titles.style);
+                  case 200000:
+                    return const Text('200k', style: Titles.style);
+                  case 250000:
+                    return const Text('250k', style: Titles.style);
+                  case 300000:
+                    return const Text('300k', style: Titles.style);
+                  case 350000:
+                    return const Text('350k', style: Titles.style);
+                  case 400000:
+                    return const Text('400k', style: Titles.style);
+                  case 450000:
+                    return const Text('450k', style: Titles.style);
+                  case 500000:
+                    return const Text('500k', style: Titles.style);
+                  case 550000:
+                    return const Text('550k', style: Titles.style);
+                  default:
+                    return const Text('');
                 }
-                return const Text('');
               },
               showTitles: true,
             ),
@@ -295,7 +309,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
       minX: 0,
       maxX: 4,
       minY: 0,
-      maxY: maxValue(),
+      maxY: maxValue() * 1.1,
       gridData: FlGridData(
           show: true,
           getDrawingVerticalLine: (value) {
